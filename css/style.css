@@ -1,0 +1,117 @@
+
+body, html {
+    height: 100%;
+    overflow: hidden;
+	position: relative;
+	margin: 0;
+	padding: 0;
+	font-family: 'Open Sans', sans-serif;
+}
+body{
+	background-color:#ecf0f1;
+	margin-top: 40px;
+}
+.load_site {
+    position: fixed;
+    background: url(../img/loading.gif) rgba(250,250,250,0.5) no-repeat center center;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 300;
+	display: none;
+    opacity: 1;
+}
+
+
+.ga-scroll-content{
+	overflow: hidden;
+	overflow-y: scroll;
+	position: absolute;
+	top:0px;
+	bottom: 0px;
+	left:0;
+	right:0;
+	height: 100%
+}
+.ga-scroll-wr{
+	height: 100%;
+	position: relative;
+    width: 100%;
+}
+
+.ga-noscroll{
+	overflow-y: hidden;
+}
+.ga-animate{
+	-webkit-transition: all 0.3s ease;
+    -moz-transition: all 0.3s ease;
+    -ms-transition: all 0.3s ease;
+    -o-transition: all 0.3s ease;
+    transition: all 0.3s ease;
+}
+.ga-shadow{
+	-webkit-box-shadow: 0px 5px 9px 0px rgba(0,0,0,0.21);
+	-moz-box-shadow: 0px 5px 9px 0px rgba(0,0,0,0.21);
+	box-shadow: 0px 5px 9px 0px rgba(0,0,0,0.21);
+}
+.a-edit{
+	text-transform: uppercase;
+	font-weight: bold;
+	color: #fff;
+	text-decoration: none!important;
+	padding-left: 50px;
+}
+.input-style{
+	width:300px;
+	margin-left: 100px;
+	max-width: 100%;
+	border: none;
+	outline: none;
+	color: #2980b9;
+	border-bottom: 1px solid #2980b9;
+	
+}
+.ga-header-panel{
+	position: fixed;
+	left:0;
+	right:0;
+	top:0;
+	padding: 10px 10px 10px 50px;
+	text-transform: uppercase;
+	background: #3498db;
+	color:rgba(255,255,255,0.9);
+	height: 20px;
+	max-height: 40px;
+}
+.ga-auto-select{
+	margin: 0 auto;
+
+	position: relative;
+	background: #2980b9;
+	color:rgba(255,255,255,0.9);
+}
+.ga-auto-select-name{
+	height: 30px;
+	margin-left: 100px;
+	padding-top: 10px;
+	max-height: 40px;
+	text-align: right;
+	padding-right: 20px;
+}
+.ga-auto-select-select{
+	background: #fff;
+	min-height: 40px;
+}
+.ga-auto-select-avatar{
+	left:30px;
+	top:10px;
+	display: block;
+	border-radius: 100%;
+	overflow: hidden;
+	height:60px;
+	width:60px;
+	background: url(../img/car.jpg) #eaeaea no-repeat center center;
+	background-size: cover;
+	position: absolute;
+}
