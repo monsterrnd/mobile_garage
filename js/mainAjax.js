@@ -7,16 +7,19 @@ bag = {
 		}
 	}
 }
+
 var ExStatus;
 ExStatus = {
 	loadimg : function(el){
 		
-		console.log("loadding "+el+"....")
-		$(".load_site").css("display","block")
+		console.log("loadding ....");
+		console.log(el);
+		$(".load_site").css("display","block");
 	},	
 	loadimgClaer : function(el){
-		console.log("loaded "+el+".")
-		$(".load_site").css("display","none")
+		console.log("loaded .");
+		console.log(el);
+		$(".load_site").css("display","none");
 	}
 }
 
@@ -31,45 +34,6 @@ ExModail = {
 		this.variab.popup_zindex =  this.variab.overlay_zindex + 2;
 		number_modal = Math.floor(Math.random() * 9999999999);
 		this.variab[number_modal] = el;
-	},
-	initmicro: function (el,click_el){
-		var modal_length = false;
-		var idvalid = /^[#].+$/i;
-		if (idvalid.test(el)){
-			if ($(el).html().length > 0){
-				modal_length = true;
-			}
-		}
-		if (modal_length){			
-			this.indexmodal(el);
-			$("body").prepend(
-				"<div style=\"z-index:" + this.variab.overlay_zindex + "\" c-data-id=\""+number_modal+"\" class=\"bxmag-overlay bxmag-overlaymini \"></div>\n\
-				<div c-data-id=\""+number_modal+"\" style=\"z-index:" + this.variab.popup_zindex + "\" class=\"bxmag-popup bxmag-popupmini\">\n\
-				<div c-data-id=\""+number_modal+"\" class=\"bxmag-close_popup bxmag-close_popupmini\">\n\
-				<img src=\"/ajax/img/xhover.png\" alt=\"\" /></div>\n\
-				<div c-data-id=\""+number_modal+"\" class=\"bxmag-ok_popup\">\n\
-				<img src=\"/ajax/img/xhover.png\" alt=\"\" /></div>\n\
-				</div>"
-			);
-		}
-		setTimeout(function(){
-			$(".bxmag-overlay, .bxmag-popup").addClass("bxmag-show");
-			$(".bxmag-popup").style("top",$(click_el).offset().top - 5 + "px","important");
-			$(".bxmag-popup").css("left",$(click_el).offset().left - 5 + "px");
-		}, 100);
-		
-		modail_html = $(el).html();
-		$(el).empty();
-		
-		var form = $('[c-data-id = ' + number_modal + '].bxmag-popup').prepend(modail_html);
-		form.find('.bxmag-close_popup').click(function(){
-			var number = $(this).closest('.bxmag-popup').attr('c-data-id');
-			ExModail.close(number);
-		});
-		form.find('.bxmag-ok_popup').click(function(){
-			var number = $(this).closest('.bxmag-popup').attr('c-data-id');
-			ExModail.ok(number);
-		});
 	},
 	init: function (el,paramEx){
 		var param = $.extend({},paramEx);
@@ -92,19 +56,20 @@ ExModail = {
 		if (modal_length){			
 			this.indexmodal(el);
 			$("body").prepend(
-				"<div style=\"z-index:" + this.variab.overlay_zindex + "\" c-data-id=\""+number_modal+"\" class=\"bxmag-overlay bxmag-transition\"></div>\n\
-				<div c-data-id=\""+number_modal+"\" style=\"z-index:" + this.variab.popup_zindex + "\" class=\"bxmag-popup bxmag-transition\">\n\
-				<div c-data-id=\""+number_modal+"\" class=\"bxmag-close_popup\">\n\
-				<img src=\"/core/modules/ajax/img/xhover.png\" alt=\"\" /></div></div>"
+				"<div style=\"z-index:" + this.variab.overlay_zindex + "\" c-data-id=\""+number_modal+"\" class=\"ga-overlay ga-transition\"></div>\n\
+				<div c-data-id=\""+number_modal+"\" style=\"z-index:" + this.variab.popup_zindex + "\" class=\"ga-popup ga-transition\">\n\
+				<div c-data-id=\""+number_modal+"\" class=\"ga-modail-head\"></div>\n\
+				<div c-data-id=\""+number_modal+"\" class=\"ga-close_popup\">\n\
+				<span class = \"glyphicon glyphicon-remove-circle\"></span></div></div>"
 			);
 	
 			if (param.hasOwnProperty("style")){
-				$('[c-data-id = ' + number_modal + '].bxmag-popup').css(param.style)
+				$('[c-data-id = ' + number_modal + '].ga-popup').css(param.style)
 			}
 			
 			setTimeout(function(){
-				$(".bxmag-overlay, .bxmag-popup").addClass("bxmag-show");
-				$(".bxmag-popup").css("top",window.pageYOffset+30+"px")
+				$(".ga-overlay, .ga-popup").addClass("ga-show");
+				$(".ga-popup").css("top",window.pageYOffset+30+"px")
 			}, 100);
 			
 			if (modal_string == true){
@@ -115,17 +80,17 @@ ExModail = {
 				$(el).empty();
 			}
 			
-			var form = $('[c-data-id = ' + number_modal + '].bxmag-popup').prepend(modail_html);
+			var form = $('[c-data-id = ' + number_modal + '].ga-popup').prepend(modail_html);
 			//$(".user_tel").mask("+7(999)999-99-99"); //////////////плохой вызов
 			
 			if (param.hasOwnProperty("tab")){
-				form.find('[c-data-popup-tab]').addClass("bxmag-popup-tab").removeClass("bxmag-popup-tab-show");
-				$('[c-data-popup-tab = ' + param.tab + ']').removeClass("bxmag-popup-tab").addClass("bxmag-popup-tab-show");
+				form.find('[c-data-popup-tab]').addClass("ga-popup-tab").removeClass("ga-popup-tab-show");
+				$('[c-data-popup-tab = ' + param.tab + ']').removeClass("ga-popup-tab").addClass("ga-popup-tab-show");
 			}
 			
 			bag.i("init var number_modal: ",number_modal);
-			form.find('.bxmag-close_popup').click(function(){
-				var number = $(this).closest('.bxmag-popup').attr('c-data-id');
+			form.find('.ga-close_popup').click(function(){
+				var number = $(this).closest('.ga-popup').attr('c-data-id');
 				ExModail.close(number);
 			});
 			
@@ -133,16 +98,16 @@ ExModail = {
 		return number_modal;
 	},
 	tab: function (el,name){
-		$(el).closest('.bxmag-popup').find('[c-data-popup-tab]').addClass("bxmag-popup-tab").removeClass("bxmag-popup-tab-show");
-		$(el).closest('.bxmag-popup').find('[c-data-popup-tab = ' + name + ']').removeClass("bxmag-popup-tab").addClass("bxmag-popup-tab-show");
+		$(el).closest('.ga-popup').find('[c-data-popup-tab]').addClass("ga-popup-tab").removeClass("ga-popup-tab-show");
+		$(el).closest('.ga-popup').find('[c-data-popup-tab = ' + name + ']').removeClass("ga-popup-tab").addClass("ga-popup-tab-show");
 	},
 	close: function (id){
 		var idvalid = /^[#].+$/i;
 		
-		$('[c-data-id = ' + id + ']').removeClass("bxmag-show");
+		$('[c-data-id = ' + id + ']').removeClass("ga-show");
 		if (idvalid.test(this.variab[id]))
 		{
-			modail_html = $('[c-data-id = ' + id + '].bxmag-popup').html();
+			modail_html = $('[c-data-id = ' + id + '].ga-popup').html();
 			$(this.variab[id]).html(modail_html);
 		}
 		
@@ -151,7 +116,7 @@ ExModail = {
 		}, 500);
 	},
 	ok: function (id){
-		$('[c-data-id = ' + id + '].bxmag-popup input').each(function(){
+		$('[c-data-id = ' + id + '].ga-popup input').each(function(){
 			$(this).attr("value",$(this).val());
 		})
 		
@@ -168,6 +133,9 @@ ExModail = {
 	
 	
 }
+
+
+
 var MainAjax;
 MainAjax = {
 	variab:{
@@ -217,20 +185,20 @@ MainAjax = {
 		bag.i("MainAjax.getModule.variab ",variab);
 		ExStatus.loadimg(variab);
 		$.ajax({
-			url: '/core/modules/ajax/ajax_routing.php',
+			url: '/core/modules/main/admin/ajax/ajax_routing.php',
 			type: "POST",
 			data: variab,
 			dataType: 'json',
 		})
 		.done(function(e){
-			ExStatus.loadimgClaer(variab);
+			ExStatus.loadimgClaer(e);
 			if (typeof(callback) == "function")
 			{
 				callback(e)
 			}
 		})
 		.fail(function(e){
-			ExStatus.loadimgClear(variab);
+			ExStatus.loadimgClear(e);
 			if (typeof(callback) == "function")
 			{
 				callback(e)	
@@ -243,53 +211,22 @@ MainAjax = {
 			
 			if (data.hasOwnProperty("HTML")){
 				$(data.RETURN_PARAMS.BLOCK_RETURN).html(data.HTML)
+				
+				eval(data.RETURN_PARAMS.CALL_BACK);
+				
+				
 			}
 			
 			if (data.hasOwnProperty("ERROR")){
 					bag.i("returnData var data.ERROR: ",data.ERROR);
-					ExModail.info("<div class=\"bxmag-info_modal\"><h2>Ошибка</h2><br>"+data.ERROR+"</div>",3000);
+					ExModail.info("<div class=\"ga-info_modal\"><h2>Ошибка</h2><br>"+data.ERROR+"</div>",3000);
 			}	
 			
 			if (data.hasOwnProperty("DONE")){
 					bag.i("returnData var data.ERROR: ",data.DONE);
-					ExModail.info("<div class=\"bxmag-info_modal\"><h2>Информация</h2><br>"+data.DONE+"</div>",3000);
+					ExModail.info("<div class=\"ga-info_modal\"><h2>Информация</h2><br>"+data.DONE+"</div>",3000);
 			}		
 			
-			
-			
-//			if (data.hasOwnProperty("ANSWER")){
-//				
-//				if (data.ANSWER.hasOwnProperty("DONE")){
-//					$(data.RETURN_PARAMS.BLOCK_RETURN).html(data.ANSWER.DONE);
-//					if (data.ANSWER.hasOwnProperty("BACK_URL")){
-//						location.href = data.ANSWER.BACK_URL;
-//					}
-//				}
-//				else
-//				{
-//					bag.i("returnData var data.ANSWER: ",data.ANSWER);
-//				}
-//				
-//				if (data.ANSWER.hasOwnProperty("ERROR")){
-//					bag.i("returnData var data.ERROR: ",data.ERROR);
-//					ExModail.info("<div class=\"bxmag-info_modal\"><h2>Ошибка</h2><br>"+data.ANSWER.ERROR+"</div>",3000);
-//				}
-//				
-//				if (data.ANSWER.hasOwnProperty("INFO")){
-//					bag.i("returnData var data.INFO: ",data.ANSWER.INFO);
-//					
-//					if (data.RETURN_PARAMS.hasOwnProperty("CLEAR_FORM")){
-//						if(data.RETURN_PARAMS.CLEAR_FORM == "true")
-//						{
-//							var form;
-//							form = data.RETURN_PARAMS.ELEMENT;
-//							bag.i("form var form: ",form);
-//							$(form).find("input[type=text], input[type=radio], input[type=checkbox], input[type=tel], input[type=password], input[type=email], textarea").val("");
-//						}
-//					}
-//					bxMagModail.info("<div class=\"bxmag-info_modal\"><h2>!</h2><br>"+data.ANSWER.INFO+"</div>",5000);
-//				}
-//			}
 		})
 		initFunction()
 	},
@@ -301,8 +238,11 @@ MainAjax = {
 	}
 }
 
+
+
 var ExForm;
 ExForm = {
+	////проверка формы перед отправкой
 	validform : function (form){
 		
 		var mailvalid= /^([a-z0-9_\.-])+@[a-z0-9-]+\.([a-z]{2,4}\.)?[a-z]{2,4}$/i;	
@@ -312,10 +252,11 @@ ExForm = {
 			var elForm = $(this);
 			var dataneeded = elForm.attr("c-data-needed");
 			var nameinput = elForm.attr("c-data-name");
+			
 			if (elForm.val().length < 1 && (dataneeded == 1))
 			{
 				elForm.attr("placeholder","Введите "+nameinput);
-				elForm.addClass("po-fild-needed");
+				elForm.closest(".form-group").addClass("has-error");
 				active_send = 0;
 			}
 			else
@@ -324,27 +265,35 @@ ExForm = {
 				{
 						elForm.val("");
 						elForm.attr("placeholder","Введите корректный "+nameinput+"");
-						elForm.addClass("po-fild-needed");
+						elForm.closest(".form-group").addClass("has-error");
 						active_send = 0;
 				}
 				else
 				{
-					elForm.removeClass("po-fild-needed")
+					elForm.closest(".form-group").removeClass("has-error")
 				}	
 			}
 		});
-		$(".po-fild-needed").click(function(){
-			$(this).removeClass("po-fild-needed");
+		
+		$(".has-error").click(function(){
+			$(this).closest(".form-group").removeClass("has-error");
 		})
+		
 		return active_send;
 	},
-	
+	///////перебор из полей формы
 	getData: function(name, form) {
-		var selector = "[name=" + name + "]";
+		
+		var selector = "[name='" + name + "']";
 		var count = $(form).find(selector).length;
 		
 		if(count === 1) {
-			return $(form).find(selector).val();
+			if ($(form).find(selector).prop("type") == "checkbox"){
+				return $(form).find(selector).prop('checked');
+			}
+			else{
+				return $(form).find(selector).val();
+			}
 		}
 		
 		var data = [];
@@ -359,7 +308,7 @@ ExForm = {
 		}
 		return data;
 	},
-
+	///////создает обект  из подготовленых полей формы
 	serializeForm : function (form,callback){
 		if (typeof(form) == "object")
 			form = $(form).closest("form");
@@ -378,7 +327,9 @@ ExForm = {
 				
 				
 				name = $(this).attr("name");
+
 				name_fild = $(this).attr("c-data-name");
+				
 				value = ExForm.getData($(this).attr('name'), form);
 				
 				objforsend[name] = value;
@@ -397,12 +348,10 @@ ExForm = {
 		}
 	}
 }
+
 var ExFormated;
 ExFormated = {
-	variab:{
-		changebasketTime: "",
-	},	
-	getModule : function (el,module,act,type,block,clear_form){
+	getModule : function (el,module,act,type,block,clear_form,call_back){
 		ExForm.serializeForm(el,function(objforsend,objforsendandname){
 			
 			if (!clear_form)
@@ -424,6 +373,7 @@ ExFormated = {
 				query[module] = {
 					"ACTION" : act,
 					"BLOCK_RETURN" : block,
+					"CALL_BACK" : call_back,
 					"ELEMENT": el,
 					"CLEAR_FORM": clear_form,
 					"FILDS" : objforsendandname
@@ -437,6 +387,7 @@ ExFormated = {
 				query[module] = {
 					"ACTION" : act,
 					"BLOCK_RETURN" : block,
+					"CALL_BACK" : call_back,
 					"ELEMENT": el,
 					"CLEAR_FORM": clear_form,
 					"FILDS" : objforsend
@@ -448,20 +399,7 @@ ExFormated = {
 		})
 	}
 }
-var WindowAjax;
-WindowAjax = {
-	windowTo : function (window,block){
-		var query = {};
-		query[window] = {
-			"SORT" : 1,
-			"BLOCK_RETURN" : block,
-		}
-		MainAjax.returnOneToBlocks(query,true)
-	}
-}
 
 
-function initFunction(){
-	$(".po_phone").mask("+7(999)999-99-99");
-	$(".po_date").mask("99.99.9999");
-}
+
+

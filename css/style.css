@@ -2,14 +2,18 @@
 body, html {
     height: 100%;
     overflow: hidden;
-	position: relative;
+	//position: relative;
 	margin: 0;
 	padding: 0;
 	font-family: 'Open Sans', sans-serif;
+	font-size: 14px;
 }
 body{
 	background-color:#ecf0f1;
 	margin-top: 40px;
+}
+a{
+	text-decoration: none!important;
 }
 .load_site {
     position: fixed;
@@ -22,8 +26,28 @@ body{
 	display: none;
     opacity: 1;
 }
-
-
+.color-w{
+	background: #fff;
+}
+.ga-hr{
+	width:120%;
+	height: 1px;
+	background: #efefef;
+	margin: 5px -10px 10px -10px;
+}
+.ga-glyp:after, .ga-glyp:before{
+	position: absolute;
+	text-align: right;
+	top: 1px;
+	right: 0;
+	display: inline-block;
+	font-family: 'Glyphicons Halflings';
+	font-style: normal;
+	font-weight: normal;
+	line-height: 1;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;	
+}
 .ga-scroll-content{
 	overflow: hidden;
 	overflow-y: scroll;
@@ -38,6 +62,7 @@ body{
 	height: 100%;
 	position: relative;
     width: 100%;
+	padding-top: 40px;
 }
 
 .ga-noscroll{
@@ -51,20 +76,13 @@ body{
     transition: all 0.3s ease;
 }
 .ga-shadow{
-	-webkit-box-shadow: 0px 5px 9px 0px rgba(0,0,0,0.21);
-	-moz-box-shadow: 0px 5px 9px 0px rgba(0,0,0,0.21);
-	box-shadow: 0px 5px 9px 0px rgba(0,0,0,0.21);
+	-webkit-box-shadow: 0px 5px 9px 0px rgba(0,0,0,0.15);
+	-moz-box-shadow: 0px 5px 9px 0px rgba(0,0,0,0.15);
+	box-shadow: 0px 5px 9px 0px rgba(0,0,0,0.15);
 }
-.a-edit{
-	text-transform: uppercase;
-	font-weight: bold;
-	color: #fff;
-	text-decoration: none!important;
-	padding-left: 50px;
-}
+
 .input-style{
-	width:300px;
-	margin-left: 100px;
+	width:100%;
 	max-width: 100%;
 	border: none;
 	outline: none;
@@ -77,16 +95,16 @@ body{
 	left:0;
 	right:0;
 	top:0;
+	z-index: 15;
 	padding: 10px 10px 10px 50px;
 	text-transform: uppercase;
 	background: #3498db;
 	color:rgba(255,255,255,0.9);
-	height: 20px;
+	height: 40px;
 	max-height: 40px;
 }
 .ga-auto-select{
 	margin: 0 auto;
-
 	position: relative;
 	background: #2980b9;
 	color:rgba(255,255,255,0.9);
@@ -99,14 +117,16 @@ body{
 	text-align: right;
 	padding-right: 20px;
 }
-.ga-auto-select-select{
-	background: #fff;
-	min-height: 40px;
-}
+
+
+
+
 .ga-auto-select-avatar{
-	left:30px;
-	top:10px;
+	z-index: 10;
+	margin-left:10px;
+	margin-top:10px;
 	display: block;
+	
 	border-radius: 100%;
 	overflow: hidden;
 	height:60px;
@@ -114,4 +134,206 @@ body{
 	background: url(../img/car.jpg) #eaeaea no-repeat center center;
 	background-size: cover;
 	position: absolute;
+}
+
+.ga-rating span{
+	color:#f99d1c;
+}
+.ga-rating span.nn{
+	color:#9a9a9a;
+}
+
+.ga-main-menu{
+	margin: 10px;
+}
+.ga-main-menu-item {
+	width: 100%;
+	display: block;
+	background: #fff;
+	height: 50px;
+	font-size: 20px;
+	color:#000;
+	line-height: 46px;
+	margin-top: 10px;
+	border-radius:3px;
+	position: relative;
+}
+.ga-main-menu-item:after {
+    content: "\e258";
+	color:#3498db;
+	top:15px;
+	right:5px;
+}
+
+.ga-main-menu-item.zap-to:before {
+    content: "\e136";
+	color:#3498db;
+	top:15px;
+	left:16px;
+	right:auto;
+}
+.ga-main-menu-item span{
+	vertical-align: middle;
+	padding:0 20px 0 50px;
+}
+
+.ga-list{
+	
+}
+
+.ga-list-item{
+	width: 100%;
+	background: #fff;
+	padding: 10px 0;
+	color:#000;
+	display: block;
+	border-bottom: 1px solid #dadada;
+	position: relative;
+}
+
+.ga-list-item:after {
+    content: "\e258";
+	color:#3498db;
+	top:15px;
+	right:5px;
+}
+.ga-list-item span{
+	padding-left: 30px;
+	font-size: 18px;
+}
+
+.ga-listblock{
+	margin: 10px;	
+}
+.ga-listblock-item{
+	width: 100%;
+	display: block;
+	background: #fff;
+	color:#000;
+	//line-height: 46px;
+	margin-top: 10px;
+	border-radius:3px;
+}
+.ga-listblock-name{
+	font-size: 14px;
+}
+.ga-listblock-price{
+	font-size: 16px;
+	font-weight: bold;
+	color:#2980b9;
+}
+.ga-listblock-address{
+	font-size: 12px;
+	color:#9a9a9a;
+}
+.ga-listblock-logo{
+    background-position: left bottom;
+    background-repeat: no-repeat;
+    background-size: contain;
+    height: 90px;
+    width: 90px;
+    position: absolute;
+	margin-left: 10px;
+	margin-top: 10px;
+	
+}
+
+
+.ga-detail{
+	margin: 10px;
+	padding: 10px;
+	background: #fff;
+	color:#000;
+	border-radius:3px;
+	overflow: hidden;
+}
+.ga-detail-item{
+	margin-bottom: 10px;
+}
+.ga-detail-logo{
+	width: 150px;
+	height: 150px;
+	margin: 0 auto;
+	display: block;
+	border-radius: 100%;
+	margin-bottom: 5px;
+}
+
+.ga-detail-rating-text{
+	text-align: center;
+	margin-bottom: 15px;
+}
+.ga-detail-title{
+	font-size: 16px;
+	color: #000;
+	margin-bottom: 5px;
+}
+.ga-detail-price{
+    font-size: 18px;
+    font-weight: bold;
+    color: #2980b9;
+	margin-bottom: 5px;
+}
+.ga-detail-address{
+    font-size: 14px;
+    color: #9a9a9a;
+	margin-bottom: 5px;
+}
+
+
+.review{
+	
+}
+.review-item{
+	position: relative;
+	margin-bottom: 10px;
+	padding-bottom: 10px;
+	border-bottom: 1px solid #efefef;
+}
+.review-date{
+	position: absolute;
+	right: 0;
+	color: #999;
+}
+.review-name{
+	font-weight: bold;
+	margin-bottom: 5px;
+}
+
+.review-desc{
+margin-top: 5px	
+}
+
+
+
+/*/////FORMS*/
+.ga-form-select{
+	display: block;
+	position: relative;
+	width: 100%;
+	color:#3498db;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	border-bottom: 1px solid #3498db;
+}
+.ga-form-select:after {
+	content: "\e259";
+}
+.ga-form-input,.ga-form-textarea{
+	outline: none!important;
+	border: none;
+	border-bottom: 1px solid #3498db;
+	background: none;
+	color:#3498db;
+	width: 100%;
+	font-size: 14px;
+}
+.ga-form-textarea{
+	resize: none;
+}
+.ga-form-label{
+	display: block;
+	font-size: 11px;
+	color:#999;
 }
