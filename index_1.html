@@ -12,6 +12,7 @@
 	
 	<script src="/vendor/jquery/dist/jquery.min.js" type="text/javascript"></script>
 	<script src="/vendor/jquery.maskedinput/jquery.maskedinput.min.js" type="text/javascript"></script>
+	<script src="/vendor/jquery.formcheckbox/jquery.formcheckbox.js" type="text/javascript"></script>
 	<!--script src="/vendor/bootstrap/dist/js/bootstrap.min.js" type="text/javascript"></script-->
 	
 	<script src="/js/mainAjax.js" type="text/javascript"></script>
@@ -172,8 +173,10 @@
 			<div class="ga-detail-address">
 				<span class="glyphicon glyphicon-map-marker"></span> Вятская 53
 			</div>
-
+			<div class="ga-title">Контактная информация</div>
 			<div class="ga-hr"></div>
+			
+			
 			<div class="ga-detail-item">
 				<label class="ga-form-label" for="SERVICE_NAME">Услуга</label>
 				<input type="text" disabled="disabled" c-data-needed="0" c-data-name="" name="SERVICE_NAME" class="ga-form-input" id="SERVICE_NAME" value="Замена масла">	
@@ -205,11 +208,21 @@
 				<input type="hidden" c-data-needed="0" c-data-name="" name="DATE" class="ga-form-input ga_phone" id="DATE" value="">	
 			</div>
 			<div class="ga-detail-item">
+				<input type="checkbox" c-data-needed="0" checked="checked" c-data-name="Свои запчасти" name="REPAIR" class="ga-form-checkbox" id="PHONE" value="">	
+			</div>
+			<div class="ga-detail-item">
 				<label class="ga-form-label" for="COMMENT">Комментарий</label>
 				<textarea c-data-needed="0" c-data-name="Телефон" name="COMMENT" class="ga-form-textarea" id="COMMENT" rows="4"></textarea>	
 			</div>
+			<div class="ga-detail-item">
+				<a href="javascript:void(0)" onclick="ExModail.init('#modal-test2')" class="ga-form-button">Отправить заявку</a>
+			</div>
 			
+			
+			<div class="ga-title">Отзывы о компании</div>
 			<div class="ga-hr"></div>
+			
+			
 			<div class="review">
 				<div class="review-item">
 					<div class="review-date">

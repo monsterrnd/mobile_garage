@@ -30,10 +30,18 @@ a{
 	background: #fff;
 }
 .ga-hr{
-	width:120%;
 	height: 1px;
-	background: #efefef;
-	margin: 5px -10px 10px -10px;
+	margin-bottom: 50px;
+}
+.ga-title{
+	background: #2980b9;
+	color: #fff;
+	position: absolute;
+	margin-top: 10px;
+	left:0;
+	right: 0;
+	font-size: 16px;
+	padding: 5px 10px;
 }
 .ga-glyp:after, .ga-glyp:before{
 	position: absolute;
@@ -80,6 +88,7 @@ a{
 	-moz-box-shadow: 0px 5px 9px 0px rgba(0,0,0,0.15);
 	box-shadow: 0px 5px 9px 0px rgba(0,0,0,0.15);
 }
+
 
 .input-style{
 	width:100%;
@@ -246,6 +255,7 @@ a{
 	color:#000;
 	border-radius:3px;
 	overflow: hidden;
+	position: relative;
 }
 .ga-detail-item{
 	margin-bottom: 10px;
@@ -316,9 +326,11 @@ margin-top: 5px
 	white-space: nowrap;
 	text-overflow: ellipsis;
 	border-bottom: 1px solid #3498db;
+	padding: 5px 0;
 }
 .ga-form-select:after {
 	content: "\e259";
+    top: 8px;
 }
 .ga-form-input,.ga-form-textarea{
 	outline: none!important;
@@ -328,12 +340,53 @@ margin-top: 5px
 	color:#3498db;
 	width: 100%;
 	font-size: 14px;
+	padding: 5px 0;
 }
 .ga-form-textarea{
 	resize: none;
 }
 .ga-form-label{
-	display: block;
+	display: inline-block;
 	font-size: 11px;
 	color:#999;
+}
+.ga-form-checkbox{
+	display: none;
+}
+.ga-form-checkbox-style{
+	width:28px;
+	height: 28px;
+	position: relative;
+	background: #3498db;
+	border-radius:3px;
+	margin: 5px 0;
+	display: inline-block;
+    white-space: nowrap;
+    line-height: 28px;
+    text-indent: 38px;
+	color: #3498db;
+}
+.ga-form-checkbox-style:after {
+    font-size: 20px;
+	color: #fff;
+    right: 4px;
+    top: 4px;
+}
+
+.ga-form-checkbox-style:after {
+    content: "";
+}
+
+.ga-form-checkbox-style.checked:after {
+    /*content: "\e014";*/
+	content: "\e013";
+}
+.ga-form-button{
+	margin: 5px 0;	
+	padding: 8px;
+	background: #3498db;	
+	border-radius:3px;
+	text-align: center;
+	color: #fff;
+	display: block;
 }

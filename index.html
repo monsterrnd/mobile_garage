@@ -6,11 +6,13 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no;">
 	
 	<!--link href="/vendor/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" type="text/css"-->
+	<link href="/css/bootstrap.css" rel="stylesheet" type="text/css"/>	
 	<link href="/css/style.css" rel="stylesheet" type="text/css"/>	
 	<link href="/css/mobile.css" rel="stylesheet" type="text/css"/>	
-	
+	<title></title>
 	<script src="/vendor/jquery/dist/jquery.min.js" type="text/javascript"></script>
 	<script src="/vendor/jquery.maskedinput/jquery.maskedinput.min.js" type="text/javascript"></script>
+	<script src="/vendor/jquery.formcheckbox/jquery.formcheckbox.js" type="text/javascript"></script>
 	<!--script src="/vendor/bootstrap/dist/js/bootstrap.min.js" type="text/javascript"></script-->
 	
 	<script src="/js/mainAjax.js" type="text/javascript"></script>
@@ -21,51 +23,70 @@
 <div class="ga-header-panel">
 	Мой гараж
 </div>
-<!--div class="ga-auto-select ga-shadow">
-	<a href="#" class="ga-auto-select-avatar  ga-shadow"></a>
-	<div class="a-grid"> 
-		<div class="a-box-md-4-1"></div>
-		<div class="a-box-md-4-1">
-			<div class="a-mr-5 a-text-left">Мой авто</div>
-		</div>
-		<div class="a-box-md-2-1">
-			<div class="a-mr-5 a-text-right"><a href="#" class="a-edit">Изменить</a></div>
-		</div>
-	</div>	
-	<div class="a-grid color-w">
-		<div class="a-box-md-4-1">
-		</div>
-		<div class="a-box-md-3-4">
-			<div class="a-mr-5">
-					<select class="input-style">
-						<option>Пункт 1</option>
-						<option>Пункт 2</option>
-					</select>
-			</div>
-		</div>
-	</div>	
-</div>
-<div class="ga-main-menu">
-	<a href="#" class="ga-main-menu-item  ga-shadow">
-		<span>Запись на ТО</span>
-	</a>
-	<a href="#" class="ga-main-menu-item  ga-shadow">
-		<span>Запись на ТО</span>
-	</a>
-	<a href="#" class="ga-main-menu-item  ga-shadow">
-		<span>Запись на ТО</span>
-	</a>
-</div-->
+
 <div class="ga-scroll-content">
 	<div class="ga-scroll-wr ga-animate" >
-		<!--div class="ga-main-menu">
-			<a href="javascript:void(0);" onclick="tester()" class="ga-main-menu-item  ga-shadow">
-				<span>назад</span>
-			</a>
-		</div-->			
-		<div class="ttttt">
+		
+		<div class="ga-auto-select ga-shadow">
+			<a href="#" class="ga-auto-select-avatar ga-shadow"></a>
+			<div class="a-grid"> 
+				<div class="a-box-md-4-1"></div>
+				<div class="a-box-md-4-1">
+					<div class="a-mr-5 a-text-left">Мой авто</div>
+				</div>
+				<div class="a-box-md-2-1">
+					<div class="a-mr-5 a-text-right">		
+						<a href="javascript:void(0)" onclick="" class="a-edit">Изменить</a>
+					</div>
+				</div>
+			</div>	
+			<div class="a-grid color-w">
+				<div class="a-box-md-4-1">
+				</div>
+				<div class="a-box-md-3-4">
+					<div class="a-mr-5">
+						<a href="javascript:void(0)" onclick="ExModail.init('#modal-test')" class="ga-form-select ga-glyp"> BMW,X6, 124 лс</a>
+						<div id="modal-test" class="ga-modal-hide">
+							<div class="ga-list ga-shadow">	
+								<a href="#" class="ga-list-item ga-glyp ">
+									<span>BMW,X1, 124 лс</span>
+								</a>	
+								<a href="#" class="ga-list-item ga-glyp ">
+									<span>BMW,X3, 151 лс</span>
+								</a>	
+								<a href="#" class="ga-list-item ga-glyp ">
+									<span>BMW,X5, 180 лс</span>
+								</a>
+								<a href="#" class="ga-list-item ga-glyp ">
+									<span>BMW,X6, 220 лс</span>
+								</a>	
 
-		</div>
+							</div>
+						</div>					
+					</div>
+				</div>
+			</div>	
+		</div>			
+		<div class="ga-main-menu">
+
+			
+			<a href="/tire/" class="ga-main-menu-item ga-glyp zap-to ga-shadow ">
+				<span>Ремонт</span>
+			</a>
+			<a href="/diagnostics/" class="ga-main-menu-item ga-glyp zap-to ga-shadow">
+				<span>Диагностика авто</span>
+			</a>
+			<a href="/inspection/" class="ga-main-menu-item ga-glyp zap-to ga-shadow">
+				<span>Запись на техосмотр</span>
+			</a>
+			<a href="/reviews/" class="ga-main-menu-item ga-glyp zap-to ga-shadow">
+				<span>Мои отзывы</span>
+			</a>
+			<a href="/order/" class="ga-main-menu-item ga-glyp zap-to ga-shadow">
+				<span>Мои заказы</span>
+			</a>
+
+		</div>	
 		
 	</div>
 
