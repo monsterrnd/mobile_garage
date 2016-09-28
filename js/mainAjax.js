@@ -11,12 +11,12 @@ bag = {
 var ExStatus;
 ExStatus = {
 	loadimg : function(el){
-		
 		console.log("loadding ....");
 		console.log(el);
 		$(".load_site").css("display","block");
 	},	
 	loadimgClaer : function(el){
+		
 		console.log("loaded .");
 		console.log(el);
 		$(".load_site").css("display","none");

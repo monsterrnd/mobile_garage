@@ -3,12 +3,17 @@ $(document).ready(function(){
 	$(".ga_phone").mask("+7(999)999-99-99");
 	$(".ga-form-checkbox").stf();
 	
-	
+	//window.history.state
 	$(".ga-main-menu-item").click(function(el) {
 		url = $(this).attr("href");
 		history.pushState({url: url}, 'Title', url)
 		el.preventDefault(); 
 	})	
+	
+	
+	GaWindow.main();
+	GaAjax.preQuery(window.history.state)
+	GaAjax.stopHref() ////потом убрать
 	
 	//tester ("");
 	
@@ -51,15 +56,34 @@ $(document).ready(function(){
 //
 //
 
-var GaWindow;
 
+
+var GaStructure
+GaConnect = {
+	variab:{
+		
+	}
+}
+var GaConnect
+GaConnect = {
+	variab:{
+		server: "http://192.168.0.77:6455/app",
+	}
+}
+var GaWindow;
 GaWindow = {
 	variab:{
 		method: "ajax",
 	},
-	initQuery : function (obj){
-
-	}	
+	main : function (){
+		html =		GaGUI.menu("/repairs/", "Ремонт", "", "zap-to nothref");
+		html +=		GaGUI.menu("/diagnostics/", "Диагностика авто", "", " nothref");
+		html +=		GaGUI.menu("/inspection/", "Запись на техосмотр", "", " nothref");
+		html +=		GaGUI.menu("/tire/", "Шиномонтаж", "", " nothref");
+		html +=		GaGUI.menu("/reviews/", "Мои отзывы", "", " nothref");
+		html +=		GaGUI.menu("/order/", "Мои заказы", "", " nothref");
+		$(".ga-scroll-wr").html(html);
+	},
 }
 
 var GaGUI;
@@ -217,18 +241,59 @@ GaGUI = {
 
 var GaAjax;
 GaAjax = {
-	variab:{
-		method: "ajax",
-		modules: {}
+	getModule : function (url,method,callback,obj){
+		ExStatus.loadimg(url);
+		$.ajax({
+			url: GaConnect.variab.server+url,
+			type: method,
+			data: obj,
+			dataType: 'json',
+		})
+		.done(function(e){
+			ExStatus.loadimgClaer(url);
+			if (typeof(callback) == "function")
+			{
+				callback(e)
+			}
+		})
+		.fail(function(e){
+			ExStatus.loadimgClear(url);
+			if (typeof(callback) == "function")
+			{
+				callback(e)	
+			}
+		});
 	},
-	
-	initQuery : function (obj,callback){
-		////////добавляем к существующим модулям
-		this.variab.modules = $.extend(this.variab.modules,obj);
-		
-		if (typeof(callback) == "function")
-		{
-			callback(true);	
+	stopHref : function (){
+		$(".nothref").click(function(el) {
+			url = $(this).attr("href");
+			history.pushState({url: url}, 'Title', url)
+			GaAjax.preQuery(url);
+			el.preventDefault(); 
+		})	 	
+	},
+	preQuery : function (url){
+		if (url == "/repairs/"){
+			GaAjax.getModule("/services/1/","GET",function(data){
+				console.log(data);
+				GaWindow.main();
+				GaAjax.stopHref()
+			},"");
 		}
-	}
+		if (url == "/diagnostics/"){
+			GaAjax.getModule("/services/98/","GET",function(data){
+				console.log(data);
+				GaWindow.main();
+				GaAjax.stopHref()
+			},"");
+		}
+		if (url == "/tire/"){
+			GaAjax.getModule("/services/51/","GET",function(data){
+				console.log(data);
+				GaWindow.main();
+				GaAjax.stopHref()
+			},"");
+		}
+		
+	},
 }
