@@ -6,15 +6,27 @@ $(document).ready(function(){
 	//window.history.state
 	$(".ga-main-menu-item").click(function(el) {
 		url = $(this).attr("href");
-		history.pushState({url: url}, 'Title', url)
+		history.pushState({}, null, url)
 		el.preventDefault(); 
 	})	
 	
 	
-	GaWindow.main();
-	GaAjax.preQuery(window.history.state)
-	GaAjax.stopHref() ////потом убрать
 	
+	
+	//// таймер слушает адресную строку	
+	var GaLastURL;
+	var GaURLbind = setInterval(function() {
+		if (window.location.pathname != GaLastURL) {
+			GaLastURL = window.location.pathname;
+			GaAjax.preQuery(GaLastURL);
+		}	  
+	}, 50);
+
+
+//	window.addEventListener('popstate', function(e){
+//		console.log(e);
+//	}, false);
+//	
 	//tester ("");
 	
 //	window.onbeforeunload = function (evt) {
@@ -31,58 +43,77 @@ $(document).ready(function(){
 })
 
 
-
-//function tester (id){
-//	$.ajax({
-//	url: 'http://192.168.0.77:6455/app/services/'+id+"/",
-//	type: "GET",
-//	data: {},
-//	dataType: 'json',
-//	})
-//	.done(function(e){
-//		$( ".ttttt" ).html("");
-//		//history.pushState({foo: 'bar'}, 'Title', id+'/')
-//		
-//		$.each(e[0],function(i, data){
-//			//console.log(data);
-//			$( ".ttttt" ).append("<a class=\"ga-list-item\" href=\"javascript:void(0);\" onclick=\"tester("+data.ID+")\"><span>"+data.NAME+"</span></a>");
-//		})
-//		//console.log(e);	
-//	})
-//	.fail(function(e){
-//		//console.log(e);	
-//	});
-//}
-//
-//
-
+var ExStatus;
+ExStatus = {
+	loadimg : function(el){
+		console.log("loadding ....");
+		console.log(el);
+		$(".load_site").css("display","block");
+	},	
+	loadimgClaer : function(el){
+		
+		console.log("loaded .");
+		console.log(el);
+		$(".load_site").css("display","none");
+	}
+}
 
 
 var GaStructure
-GaConnect = {
-	variab:{
+GaStructure = {
+	loadedDate : function (url,data){
+		$(".ga-scroll-wr").html("");
+		console.log(data);
+		///главная страница
+		if (typeof(data) != "object" && data == "/"){
+			GaWindow.main(function(html){
+				$(".ga-scroll-wr").html(html);
+				GaAjax.stopHref()
+			})
+		}
+		//списки
+		if (typeof(data) == "object" && data.hasOwnProperty("LIST")){
+			GaWindow.list(data.LIST,url,function(html){		
+				$(".ga-scroll-wr").html(html);
+				GaAjax.stopHref()
+			})			
+		}
 		
-	}
+	},
 }
+
 var GaConnect
 GaConnect = {
 	variab:{
 		server: "http://192.168.0.77:6455/app",
 	}
 }
+
 var GaWindow;
 GaWindow = {
 	variab:{
 		method: "ajax",
 	},
-	main : function (){
+	
+	main : function (callback){
 		html =		GaGUI.menu("/repairs/", "Ремонт", "", "zap-to nothref");
 		html +=		GaGUI.menu("/diagnostics/", "Диагностика авто", "", " nothref");
 		html +=		GaGUI.menu("/inspection/", "Запись на техосмотр", "", " nothref");
 		html +=		GaGUI.menu("/tire/", "Шиномонтаж", "", " nothref");
 		html +=		GaGUI.menu("/reviews/", "Мои отзывы", "", " nothref");
 		html +=		GaGUI.menu("/order/", "Мои заказы", "", " nothref");
-		$(".ga-scroll-wr").html(html);
+		
+		if (typeof(callback) == "function")
+			callback(html)
+	},
+	list : function (data,url,callback){	
+		html = "";
+		$.each(data,function(i, datael){
+			html +=	GaGUI.menu_list(url+datael.ID+"/", datael.NAME, "", " nothref");
+		})
+		
+		if (typeof(callback) == "function")
+			callback(html)
 	},
 }
 
@@ -268,32 +299,85 @@ GaAjax = {
 		$(".nothref").click(function(el) {
 			url = $(this).attr("href");
 			history.pushState({url: url}, 'Title', url)
-			GaAjax.preQuery(url);
+			//GaAjax.preQuery(url);
 			el.preventDefault(); 
 		})	 	
 	},
 	preQuery : function (url){
+		console.log("ЭТАП");
+		//Главная страница
+		if (url == "/"){
+			GaStructure.loadedDate(url,url);
+		}
+		
+		//Ремонт авто
 		if (url == "/repairs/"){
 			GaAjax.getModule("/services/1/","GET",function(data){
-				console.log(data);
-				GaWindow.main();
-				GaAjax.stopHref()
+				GaStructure.loadedDate(url,data);
 			},"");
 		}
+		GaRest.Routing("/repairs/{%}/",function(data){
+			url = "/repairs/";
+			GaAjax.getModule("/services/"+data.REQUEST[2]+"/","GET",function(data){
+				GaStructure.loadedDate(url,data);
+			},"");
+		})
+		
+		//Диагностика авто
 		if (url == "/diagnostics/"){
 			GaAjax.getModule("/services/98/","GET",function(data){
-				console.log(data);
-				GaWindow.main();
-				GaAjax.stopHref()
-			},"");
-		}
-		if (url == "/tire/"){
-			GaAjax.getModule("/services/51/","GET",function(data){
-				console.log(data);
-				GaWindow.main();
-				GaAjax.stopHref()
+				GaStructure.loadedDate(url,data);
 			},"");
 		}
 		
+		
+		GaRest.Routing("/diagnostics/{%}/",function(data){
+			url = "/diagnostics/";
+			GaAjax.getModule("/services/"+data.REQUEST[2]+"/","GET",function(data){
+				GaStructure.loadedDate(url,data);
+			},"");
+		})		
+		//Шиномантож
+		if (url == "/tire/"){
+			GaAjax.getModule("/services/51/","GET",function(data){
+				GaStructure.loadedDate(url,data);
+			},"");
+		}
+		GaRest.Routing("/tire/{%}/",function(data){
+			url = "/tire/";
+			GaAjax.getModule("/services/"+data.REQUEST[2]+"/","GET",function(data){
+				GaStructure.loadedDate(url,data);
+			},"");
+		})			
+		
 	},
+}
+var GaRest;
+GaRest = {
+	Routing : function (uri,callback){
+		stop			= false;
+		request			= window.location.pathname.split("/");
+		call_request	= uri = uri.split("/");
+		
+		if (request.length == uri.length){
+			
+			$.each(request,function(key, request_uriEl){
+				uri[key] = request_uriEl.replace("{%}",uri[key]);
+				
+				if(request_uriEl != uri[key]) { ///@TODO здесь косяк
+					stop = true;
+				}
+			})
+		}
+		else{
+			stop = true;
+		}
+		if(stop == false)
+		{
+			if (typeof(callback) == "function")
+			{
+				callback({REQUEST:request,CALL_REQUEST:call_request})	
+			}
+		}
+	}
 }
