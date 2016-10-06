@@ -2,7 +2,7 @@
 body, html {
     height: 100%;
     overflow: hidden;
-	//position: relative;
+	
 	margin: 0;
 	padding: 0;
 	font-family: 'Open Sans', sans-serif;
@@ -10,7 +10,8 @@ body, html {
 }
 body{
 	background-color:#ecf0f1;
-	margin-top: 40px;
+	//margin-top: 40px;
+	position: relative;
 }
 a{
 	text-decoration: none!important;
@@ -20,7 +21,7 @@ a{
     background: url(../img/loading.gif) rgba(250,250,250,0.5) no-repeat center center;
     left: 0;
     right: 0;
-    top: 0;
+    top: 52px;
     bottom: 0;
     z-index: 300;
 	display: none;
@@ -57,20 +58,20 @@ a{
 	-moz-osx-font-smoothing: grayscale;	
 }
 .ga-scroll-content{
-	overflow: hidden;
-	overflow-y: scroll;
+	overflow: auto;
+	//overflow-y: scroll;
 	position: absolute;
-	top:0px;
+	top:52px;
 	bottom: 0px;
 	left:0;
 	right:0;
-	height: 100%
+	//height: 100%
 }
 .ga-scroll-wr{
-	height: 100%;
+	//height: 100%;
 	position: relative;
     width: 100%;
-	padding-top: 40px;
+	padding-top: 0px;
 }
 
 .ga-noscroll{
@@ -105,12 +106,12 @@ a{
 	right:0;
 	top:0;
 	z-index: 15;
-	padding: 10px 10px 10px 50px;
+	padding: 16px 10px 10px 50px;
 	text-transform: uppercase;
 	background: #3498db;
 	color:rgba(255,255,255,0.9);
-	height: 40px;
-	max-height: 40px;
+	height: 52px;
+	max-height: 52px;
 }
 .ga-auto-select{
 	margin: 0 auto;
@@ -138,8 +139,8 @@ a{
 	
 	border-radius: 100%;
 	overflow: hidden;
-	height:60px;
-	width:60px;
+	height:70px;
+	width:70px;
 	background: url(../img/car.jpg) #eaeaea no-repeat center center;
 	background-size: cover;
 	position: absolute;
@@ -208,7 +209,9 @@ a{
 }
 .ga-list-item span{
 	padding-left: 30px;
+	padding-right: 20px;
 	font-size: 18px;
+    display: block;
 }
 
 .ga-listblock{
