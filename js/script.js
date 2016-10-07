@@ -173,6 +173,9 @@ GaWindow = {
 					"+GaGUI.input_select("Поколение", "DATE", {1:{name:"один",value:"1"},2:{name:"два",value:"2"},3:{name:"три",value:"3"}}, "", "N")+"\n\
 					"+GaGUI.input_select("Серия", "DATE", {1:{name:"один",value:"1"},2:{name:"два",value:"2"},3:{name:"три",value:"3"}}, "", "N")+"\n\
 					"+GaGUI.input_select("Модификация", "DATE", {1:{name:"один",value:"1"},2:{name:"два",value:"2"},3:{name:"три",value:"3"}}, "", "N")+"\n\
+					<div class=\"ga-detail-item\">\n\
+						<a href=\"javascript:void(0)\" onclick=\"ExFormated.getModule('#detail_company','detail_company','','','',true,'');\" class=\"ga-form-button\">Отправить заявку</a>\n\
+					</div>\n\
 				</div>";
 		
 		 
@@ -405,7 +408,7 @@ GaAjax = {
 	stopHref : function (){
 		$(".nothref").click(function(el) {
 			url = $(this).attr("href");
-			history.pushState({url: url}, 'Title', url)
+			history.pushState({}, '', url)
 			//GaAjax.preQuery(url);
 			el.preventDefault(); 
 		})	 	

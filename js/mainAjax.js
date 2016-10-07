@@ -22,6 +22,17 @@ ExModail = {
 		number_modal = Math.floor(Math.random() * 9999999999);
 		this.variab[number_modal] = el;
 	},
+	backclose: function (el){
+		modalHash = document.location.hash;
+		var OpenModal = setInterval(function() {
+			if (document.location.hash != modalHash) {
+				modalHash = document.location.hash;	
+				ExModail.close(el,true);			
+				clearTimeout(OpenModal);
+			}	  
+		}, 50);
+	},
+	
 	init: function (el,paramEx){
 		var param = $.extend({},paramEx);
 		var modal_length = false;
@@ -39,9 +50,11 @@ ExModail = {
 			}
 		}
 		
-		
 		if (modal_length){			
 			this.indexmodal(el);
+			document.location.hash = 'w_'+number_modal
+			this.backclose(number_modal);
+			console.log(idvalid);
 			$("body").prepend(
 				"<div style=\"z-index:" + this.variab.overlay_zindex + "\" c-data-id=\""+number_modal+"\" class=\"ga-overlay ga-transition\"></div>\n\
 				<div c-data-id=\""+number_modal+"\" style=\"z-index:" + this.variab.popup_zindex + "\" class=\"ga-popup ga-transition\">\n\
@@ -88,7 +101,7 @@ ExModail = {
 		$(el).closest('.ga-popup').find('[c-data-popup-tab]').addClass("ga-popup-tab").removeClass("ga-popup-tab-show");
 		$(el).closest('.ga-popup').find('[c-data-popup-tab = ' + name + ']').removeClass("ga-popup-tab").addClass("ga-popup-tab-show");
 	},
-	close: function (id){
+	close: function (id,not_back){
 		var idvalid = /^[#].+$/i;
 		
 		$('[c-data-id = ' + id + ']').removeClass("ga-show");
@@ -97,7 +110,10 @@ ExModail = {
 			modail_html = $('[c-data-id = ' + id + '].ga-popup').html();
 			$(this.variab[id]).html(modail_html);
 		}
-		
+
+		if (not_back != true){
+			window.history.go(-1);
+		}
 		setTimeout(function(){
 			$('[c-data-id = ' + id + ']').remove();
 		}, 500);
