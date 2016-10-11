@@ -58,7 +58,6 @@ ExStatus = {
 	}
 }
 
-
 var GaStructure
 GaStructure = {
 	loadedDate : function (url,data){
@@ -114,6 +113,37 @@ GaStructure = {
 		}
 		
 	},
+	loadedDateCars : function (id,data,window){
+		///марка авто
+		if (typeof(data) == "object" && data.hasOwnProperty("MARK_LIST")){
+			GaWindow.cars_mark_list(id,data.MARK_LIST,function(html){		
+				$("."+window).html(html);
+			})			
+		}		
+		///модель авто
+		if (typeof(data) == "object" && data.hasOwnProperty("MODEL_LIST")){
+			GaWindow.cars_mark_list(id,data.MODEL_LIST,function(html){		
+				$("."+window).html(html);
+			})			
+		}		
+		///модель авто
+		if (typeof(data) == "object" && data.hasOwnProperty("GENERATION_LIST")){
+			GaWindow.cars_mark_list(id,data.GENERATION_LIST,function(html){		
+				$("."+window).html(html);
+			})			
+		}		
+		//Ответ
+		if (typeof(data) == "object" && data.hasOwnProperty("NOT_QUERE")){
+			$("."+window).html("По данному запросу нет результата");		
+		}
+		//ошибка
+		if (typeof(data) == "object" && data.hasOwnProperty("statusText")){
+			if (data.statusText == "error")
+			{
+				$("."+window).html("Ошибка обновите страницу");
+			}	
+		}		
+	}	
 }
 
 var GaConnect
@@ -132,12 +162,14 @@ GaWindow = {
 	main : function (callback){
 		
 		html =		GaGUI.select_avto();
+		html +=	    "<div class=\"ga-main-menu\">";
 		html +=		GaGUI.menu("/repairs/", "Ремонт", "", "zap-to nothref");
-		html +=		GaGUI.menu("/diagnostics/", "Диагностика авто", "", " nothref");
-		html +=		GaGUI.menu("/inspection/", "Запись на техосмотр", "", " nothref");
-		html +=		GaGUI.menu("/tire/", "Шиномонтаж", "", " nothref");
-		html +=		GaGUI.menu("/reviews/", "Мои отзывы", "", " nothref");
-		html +=		GaGUI.menu("/order/", "Мои заказы", "", " nothref");
+		html +=		GaGUI.menu("/diagnostics/", "Диагностика авто", "", " nothref diagnostic");
+		html +=		GaGUI.menu("/inspection/", "Запись на техосмотр", "", " nothref inspection");
+		html +=		GaGUI.menu("/tire/", "Шиномонтаж", "", " nothref tire");
+		html +=		GaGUI.menu("/reviews/", "Мои отзывы", "", " nothref myreview");
+		html +=		GaGUI.menu("/order/", "Мои заказы", "", " nothref myorders");
+		html +=		"</div>";
 		
 		if (typeof(callback) == "function")
 			callback(html)
@@ -166,15 +198,15 @@ GaWindow = {
 		if (typeof(callback) == "function")
 			callback(html)
 	},	
-	cars_add : function (data,url,callback){		
+	cars_add : function (data,url,callback){		    
 		html =	"<div class=\"ga-detail ga-shadow\">\n\
-					"+GaGUI.input_select("Марка", "DATE", {1:{name:"один",value:"1"},2:{name:"два",value:"2"},3:{name:"три",value:"3"}}, "", "N")+"\n\
-					"+GaGUI.input_select("Модель", "DATE", {1:{name:"один",value:"1"},2:{name:"два",value:"2"},3:{name:"три",value:"3"}}, "", "N")+"\n\
-					"+GaGUI.input_select("Поколение", "DATE", {1:{name:"один",value:"1"},2:{name:"два",value:"2"},3:{name:"три",value:"3"}}, "", "N")+"\n\
-					"+GaGUI.input_select("Серия", "DATE", {1:{name:"один",value:"1"},2:{name:"два",value:"2"},3:{name:"три",value:"3"}}, "", "N")+"\n\
-					"+GaGUI.input_select("Модификация", "DATE", {1:{name:"один",value:"1"},2:{name:"два",value:"2"},3:{name:"три",value:"3"}}, "", "N")+"\n\
+					"+GaGUI.input_select("Марка", "ID_CAR_MARK", {}, "", "N",'GaCarEditing.loadMark')+"\n\
+					"+GaGUI.input_select("Модель", "ID_CAR_MODEL", {}, "", "N",'GaCarEditing.loadModel')+"\n\
+					"+GaGUI.input_select("Поколение", "ID_CAR_GENERATION", {}, "", "N",'GaCarEditing.loadAuto')+"\n\
+					"+GaGUI.input_select("Серия", "ID_CAR_SERIE", {}, "", "N",'GaCarEditing.loadAuto')+"\n\
+					"+GaGUI.input_select("Модификация", "ID_CAR_MODIFICATION", {}, "", "N",'GaCarEditing.loadAuto')+"\n\
 					<div class=\"ga-detail-item\">\n\
-						<a href=\"javascript:void(0)\" onclick=\"ExFormated.getModule('#detail_company','detail_company','','','',true,'');\" class=\"ga-form-button\">Отправить заявку</a>\n\
+						<a href=\"javascript:void(0)\" onclick=\"ExFormated.getModule('#detail_company','detail_company','','','',true,'');\" class=\"ga-form-button\">Добавить</a>\n\
 					</div>\n\
 				</div>";
 		
@@ -182,11 +214,19 @@ GaWindow = {
 		if (typeof(callback) == "function")
 			callback(html)
 	},
+	cars_mark_list : function (id,data,callback){	
+		
+			html = "";
+			$.each(data,function(i, data_el){	
+				html += GaGUI.menu_list("javasctipt:void(0)", data_el.name, "GaGUI.input_select_set(this,'"+id+"','"+data_el.name+"','"+data_el.id+"')","");
+			})
+		if (typeof(callback) == "function")
+			callback(html)
+	},
 }
 
 var GaGUI;
 GaGUI = {
-	
 	select_avto : function (){
 		html =	"<div class=\"ga-auto-select ga-shadow\">\n\
 					<a href=\"#\" class=\"ga-auto-select-avatar ga-shadow\"></a>\n\
@@ -230,15 +270,15 @@ GaGUI = {
 		return html;
 	},	
 	menu : function (url, name, on_click, cl){
-		btn = "<a href=\""+url+"\" "+((on_click != "") ? "onclick="+on_click+"" : "")+" class=\"ga-main-menu-item ga-glyp ga-shadow "+cl+"\">\n\t<span>"+name+"</span>\n</a>";
+		btn = "<a href=\""+url+"\" "+((on_click != "") ? "onclick=\""+on_click+"\"" : "")+" class=\"ga-main-menu-item ga-glyp ga-shadow "+cl+"\">\n\t<span>"+name+"</span>\n</a>";
 		return btn;
 	},	
 	menu_list : function (url, name, on_click, cl){
-		btn = "<a href=\""+url+"\" "+((on_click != "") ? "onclick="+on_click+"" : "")+" class=\"ga-list-item ga-glyp "+cl+"\">\n\t<span>"+name+"</span>\n</a>";
+		btn = "<a href=\""+url+"\" "+((on_click != "") ? "onclick=\""+on_click+"\"" : "")+" class=\"ga-list-item ga-glyp "+cl+"\">\n\t<span>"+name+"</span>\n</a>";
 		return btn;
 	},		
 	block_company : function (url, name, on_click, obj, cl){
-			btn  =	"<a href=\""+url+"\" "+((on_click != "") ? "onclick="+on_click+"" : "")+" class=\"ga-listblock-item ga-shadow "+cl+"\">\n\
+			btn  =	"<a href=\""+url+"\" "+((on_click != "") ? "onclick=\""+on_click+"\"" : "")+" class=\"ga-listblock-item ga-shadow "+cl+"\">\n\
 						<div class=\"a-grid\">\n\
 							<div class=\"a-box-md-3-1\">\n\
 								<div class=\"ga-listblock-logo\" style=\"background-image:url("+obj.IMG+")\"></div>\n\
@@ -270,7 +310,7 @@ GaGUI = {
 						<img class=\"ga-detail-logo\" src=\""+obj.IMG+"\" alt=\"\" />\n\
 						"+this.rating_get(obj.RATING,"a-text-center")+"\n\
 						<div class=\"ga-detail-rating-text\">\n\
-							"+obj.COUNT_REVIEW+"\n\
+							"+obj.COUNT_REVIEW+" Отзывов\n\
 						</div>\n\
 						<div class=\"ga-detail-title\">\n\
 							"+obj.NAME+"\n\
@@ -285,9 +325,9 @@ GaGUI = {
 						<div class=\"ga-title\">Контактная информация</div>\n\
 						<div class=\"ga-hr\"></div>\n\
 						"+GaGUI.input_text("Услуга", "SERVICE_NAME", "", "", "N")+"\n\
-						"+GaGUI.input_text("Имя", "NAME", "", "", "N")+"\n\
-						"+GaGUI.input_text("Телефон", "PHONE", "", "", "N")+"\n\
-						"+GaGUI.input_select("Дата", "DATE", {1:{name:"один",value:"1"},2:{name:"два",value:"2"},3:{name:"три",value:"3"}}, "", "N")+"\n\
+						"+GaGUI.input_text("Имя", "NAME", "", "", "Y")+"\n\
+						"+GaGUI.input_text("Телефон", "PHONE", "", "", "Y")+"\n\
+						"+GaGUI.input_select("Дата", "DATE", {1:{name:"один",value:"1"},2:{name:"два",value:"2"},3:{name:"три",value:"3"}}, "", "Y")+"\n\
 						"+GaGUI.input_checkbox("Свои запчасти", "REPAIR", "", "", "N")+"\n\
 						"+GaGUI.input_textarea("Комментарий", "COMMENT", "", "", "N")+"\n\
 						<div class=\"ga-detail-item\">\n\
@@ -358,7 +398,7 @@ GaGUI = {
 		modal_number = $(el).closest(".ga-popup").attr("c-data-id");
 		ExModail.close(modal_number);
 	},	
-	input_select : function (name, name_id, valobj, cl, req){
+	input_select : function (name, name_id, valobj, cl, req, clickFunction){
 		list = "";
 		$.each(valobj,function(i, data){
 			//console.log(data);		
@@ -366,11 +406,11 @@ GaGUI = {
 		})
 		btn =	"<div class=\"ga-detail-item\">\n\
 					<label class=\"ga-form-label\" for=\"\">"+name+"</label>\n\
-					<a href=\"javascript:void(0)\" onclick=\"ExModail.init('#"+name_id+"_modal')\" id=\""+name_id+"_a\" class=\"ga-form-select ga-glyp\">\n\
+					<a href=\"javascript:void(0)\" onclick=\"ExModail.init('#"+name_id+"_modal','',"+((clickFunction) ? ('function(){'+clickFunction+'(\''+name_id+'\',\'W_'+name_id+'\')}') : '\'\'') +")\" id=\""+name_id+"_a\" class=\"ga-form-select ga-glyp\">\n\
 						Выберите из списка\n\
 					</a>\n\
 					<div id=\""+name_id+"_modal\" class=\"ga-modal-hide\">\n\
-						<div class=\"ga-list ga-shadow\">\n\
+						<div class=\"ga-list ga-shadow W_"+name_id+"\">\n\
 							"+list+"\n\
 						</div>\n\
 					</div>\n\
@@ -380,8 +420,27 @@ GaGUI = {
 	},	
 }
 
+var GaCarEditing;
+GaCarEditing = {
+	loadMark : function (id,window){		
+		GaAjax.getModule("/auto/","GET",function(data){
+			GaStructure.loadedDateCars(id,data,window);
+		},"");
+	},	
+	loadModel : function (id,window){		
+		GaAjax.getModule("/auto/2/","GET",function(data){
+			GaStructure.loadedDateCars(id,data,window);
+		},"");
+	},
+	loadGeneration : function (id,window){		
+		GaAjax.getModule("/auto/2/6/","GET",function(data){
+			GaStructure.loadedDateCars(id,data,window);
+		},"");
+	},	
+}
 var GaAjax;
 GaAjax = {
+
 	getModule : function (url,method,callback,obj){
 		ExStatus.loadimg(url);
 		$.ajax({
@@ -502,7 +561,7 @@ GaRest = {
 			$.each(request,function(key, request_uriEl){
 				uri[key] = uri[key].replace("{%}",request_uriEl);
 				
-				if(request_uriEl != uri[key]) { ///@TODO здесь косяк
+				if(request_uriEl != uri[key]) { 
 					stop = true;
 				}
 			})

@@ -33,7 +33,7 @@ ExModail = {
 		}, 50);
 	},
 	
-	init: function (el,paramEx){
+	init: function (el,paramEx,callback){
 		var param = $.extend({},paramEx);
 		var modal_length = false;
 		var modal_string = false;
@@ -54,7 +54,6 @@ ExModail = {
 			this.indexmodal(el);
 			document.location.hash = 'w_'+number_modal
 			this.backclose(number_modal);
-			console.log(idvalid);
 			$("body").prepend(
 				"<div style=\"z-index:" + this.variab.overlay_zindex + "\" c-data-id=\""+number_modal+"\" class=\"ga-overlay ga-transition\"></div>\n\
 				<div c-data-id=\""+number_modal+"\" style=\"z-index:" + this.variab.popup_zindex + "\" class=\"ga-popup ga-transition\">\n\
@@ -94,6 +93,10 @@ ExModail = {
 				ExModail.close(number);
 			});
 			
+		}
+		if (typeof(callback) == "function")
+		{
+			callback()
 		}
 		return number_modal;
 	},
@@ -260,6 +263,7 @@ ExForm = {
 			{
 				elForm.attr("placeholder","Введите "+nameinput);
 				elForm.closest(".form-group").addClass("has-error");
+				elForm.addClass("has-error");
 				active_send = 0;
 			}
 			else
@@ -269,6 +273,7 @@ ExForm = {
 						elForm.val("");
 						elForm.attr("placeholder","Введите корректный "+nameinput+"");
 						elForm.closest(".form-group").addClass("has-error");
+						elForm.addClass("bxmag-fild-needed");
 						active_send = 0;
 				}
 				else
@@ -281,7 +286,11 @@ ExForm = {
 		$(".has-error").click(function(){
 			$(this).closest(".form-group").removeClass("has-error");
 		})
-		
+		if (active_send == 0){
+			$('.ga-scroll-content').animate({
+				scrollTop: ($(".has-error").eq(0).position().top)-40
+			}, 100);
+		}
 		return active_send;
 	},
 	///////перебор из полей формы
@@ -327,14 +336,9 @@ ExForm = {
 				var name, name_fild, value;
 				
 				bag.i("ExForm.serializeForm var name element form " + $(this).attr("name"), $(this).val())	
-				
-				
 				name = $(this).attr("name");
-
 				name_fild = $(this).attr("c-data-name");
-				
 				value = ExForm.getData($(this).attr('name'), form);
-				
 				objforsend[name] = value;
 				objforsendandname[name] = {
 					"NAME":name,
@@ -395,7 +399,8 @@ ExFormated = {
 					"CLEAR_FORM": clear_form,
 					"FILDS" : objforsend
 				}
-				MainAjax.returnOneToBlocks(query,true)
+				console.log(query);
+				//MainAjax.returnOneToBlocks(query,true)
 
 			}
 			bag.i("ExFormated.getModule.res ", res);

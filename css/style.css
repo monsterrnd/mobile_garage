@@ -23,10 +23,11 @@ a{
     right: 0;
     top: 52px;
     bottom: 0;
-    z-index: 300;
+    z-index: 200000;
 	display: none;
     opacity: 1;
 }
+
 .color-w{
 	background: #fff;
 }
@@ -182,6 +183,45 @@ a{
 	left:16px;
 	right:auto;
 }
+
+.ga-main-menu-item.diagnostic:before {
+    content: "\e003";
+	color:#3498db;
+	top:15px;
+	left:16px;
+	right:auto;
+}
+
+.ga-main-menu-item.inspection:before {
+    content: "\e032";
+	color:#3498db;
+	top:15px;
+	left:16px;
+	right:auto;
+}
+
+.ga-main-menu-item.tire:before {
+    content: "\e124";
+	color:#3498db;
+	top:15px;
+	left:16px;
+	right:auto;
+}
+.ga-main-menu-item.myreview:before {
+    content: "\e006";
+	color:#3498db;
+	top:15px;
+	left:16px;
+	right:auto;
+}
+.ga-main-menu-item.myorders:before {
+    content: "\e202";
+	color:#3498db;
+	top:15px;
+	left:16px;
+	right:auto;
+}
+
 .ga-main-menu-item span{
 	vertical-align: middle;
 	padding:0 20px 0 50px;
@@ -392,4 +432,12 @@ margin-top: 5px
 	text-align: center;
 	color: #fff;
 	display: block;
+}
+
+
+
+
+.has-error{
+	color:#f00!important;
+	border-bottom: 1px solid #f00;
 }
