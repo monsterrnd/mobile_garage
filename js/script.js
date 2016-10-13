@@ -91,10 +91,19 @@ GaStructure = {
 				GaAjax.stopHref()
 			})			
 		}
+		// список авто
+		if (typeof(data) == "object" && data.hasOwnProperty("LIST")){
+			GaWindow.list_auto(data.LIST,url,function(html){		
+				$(".ga-scroll-wr").html(html);
+				GaAjax.stopHref()
+			})			
+		}
 		//Редактирование авто
 		if (typeof(data) == "object" && data.hasOwnProperty("CARS_ADD")){
 			GaWindow.cars_add(data.CARS_ADD,url,function(html){		
+				
 				$(".ga-scroll-wr").html(html);
+				
 				GaAjax.stopHref()
 			})			
 		}
@@ -129,6 +138,18 @@ GaStructure = {
 		///модель авто
 		if (typeof(data) == "object" && data.hasOwnProperty("GENERATION_LIST")){
 			GaWindow.cars_mark_list(id,data.GENERATION_LIST,function(html){		
+				$("."+window).html(html);
+			})			
+		}		
+		///серия авто
+		if (typeof(data) == "object" && data.hasOwnProperty("SERIE_LIST")){
+			GaWindow.cars_mark_list(id,data.SERIE_LIST,function(html){		
+				$("."+window).html(html);
+			})			
+		}		
+		///модификация авто
+		if (typeof(data) == "object" && data.hasOwnProperty("MODIFICATION_LIST")){
+			GaWindow.cars_mark_list(id,data.MODIFICATION_LIST,function(html){	
 				$("."+window).html(html);
 			})			
 		}		
@@ -183,6 +204,15 @@ GaWindow = {
 		if (typeof(callback) == "function")
 			callback(html)
 	},
+	list_auto : function (data,url,callback){	
+		html = "";
+		$.each(data,function(i, datael){
+			html +=	GaGUI.menu_list_remove(url+datael.ID+"/", datael.NAME, "return GaCarEditing.Remove('"+datael.ID+"','"+datael.NAME+"')", "");
+		})
+		html +=	GaGUI.menu_list(url+"add_car/", "Добавить авто", "", " nothref");
+		if (typeof(callback) == "function")
+			callback(html)
+	},
 	block_company : function (data,url,callback){	
 		html = "";
 		$.each(data,function(i, datael){
@@ -200,13 +230,15 @@ GaWindow = {
 	},	
 	cars_add : function (data,url,callback){		    
 		html =	"<div class=\"ga-detail ga-shadow\">\n\
+					<form id=\"add_dit_car_user\">\n\
 					"+GaGUI.input_select("Марка", "ID_CAR_MARK", {}, "", "N",'GaCarEditing.loadMark')+"\n\
-					"+GaGUI.input_select("Модель", "ID_CAR_MODEL", {}, "", "N",'GaCarEditing.loadModel')+"\n\
-					"+GaGUI.input_select("Поколение", "ID_CAR_GENERATION", {}, "", "N",'GaCarEditing.loadAuto')+"\n\
-					"+GaGUI.input_select("Серия", "ID_CAR_SERIE", {}, "", "N",'GaCarEditing.loadAuto')+"\n\
-					"+GaGUI.input_select("Модификация", "ID_CAR_MODIFICATION", {}, "", "N",'GaCarEditing.loadAuto')+"\n\
+					"+GaGUI.input_select("Модель", "ID_CAR_MODEL", {}, "no-link-select", "N",'GaCarEditing.loadModel')+"\n\
+					"+GaGUI.input_select("Поколение", "ID_CAR_GENERATION", {}, "no-link-select", "N",'GaCarEditing.loadGeneration')+"\n\
+					"+GaGUI.input_select("Серия", "ID_CAR_SERIE", {}, "no-link-select", "N",'GaCarEditing.loadSerie')+"\n\
+					"+GaGUI.input_select("Модификация", "ID_CAR_MODIFICATION", {}, "no-link-select", "N",'GaCarEditing.loadModification')+"\n\
+					</form>\n\
 					<div class=\"ga-detail-item\">\n\
-						<a href=\"javascript:void(0)\" onclick=\"ExFormated.getModule('#detail_company','detail_company','','','',true,'');\" class=\"ga-form-button\">Добавить</a>\n\
+						<a href=\"javascript:void(0)\" onclick=\"ExFormated.getModule('#add_dit_car_user','add_dit_car_user','','','',true,'');\" class=\"ga-form-button\">Добавить</a>\n\
 					</div>\n\
 				</div>";
 		
@@ -218,7 +250,7 @@ GaWindow = {
 		
 			html = "";
 			$.each(data,function(i, data_el){	
-				html += GaGUI.menu_list("javasctipt:void(0)", data_el.name, "GaGUI.input_select_set(this,'"+id+"','"+data_el.name+"','"+data_el.id+"')","");
+				html += GaGUI.menu_list("/"+data_el.id+"/", data_el.name, "GaGUI.input_select_set(this,'"+id+"','"+data_el.name+"','"+data_el.id+"');return GaCarEditing.addEvent('"+id+"','"+data_el.id+"')","");
 			})
 		if (typeof(callback) == "function")
 			callback(html)
@@ -275,6 +307,10 @@ GaGUI = {
 	},	
 	menu_list : function (url, name, on_click, cl){
 		btn = "<a href=\""+url+"\" "+((on_click != "") ? "onclick=\""+on_click+"\"" : "")+" class=\"ga-list-item ga-glyp "+cl+"\">\n\t<span>"+name+"</span>\n</a>";
+		return btn;
+	},		
+	menu_list_remove : function (url, name, on_click, cl){
+		btn = "<a href=\""+url+"\" "+((on_click != "") ? "onclick=\""+on_click+"\"" : "")+" class=\"ga-list-item-remove ga-glyp "+cl+"\">\n\t<span>"+name+"</span>\n</a>";
 		return btn;
 	},		
 	block_company : function (url, name, on_click, obj, cl){
@@ -397,16 +433,17 @@ GaGUI = {
 		$("#"+name_id+"_a").html(name);
 		modal_number = $(el).closest(".ga-popup").attr("c-data-id");
 		ExModail.close(modal_number);
+		return false;
 	},	
 	input_select : function (name, name_id, valobj, cl, req, clickFunction){
 		list = "";
 		$.each(valobj,function(i, data){
 			//console.log(data);		
-			list += GaGUI.menu_list("javasctipt:void(0)", data.name, "GaGUI.input_select_set(this,'"+name_id+"','"+data.name+"','"+data.value+"')","");
+			list += GaGUI.menu_list(data.value, data.name, "return GaGUI.input_select_set(this,'"+name_id+"','"+data.name+"','"+data.value+"')","");
 		})
 		btn =	"<div class=\"ga-detail-item\">\n\
 					<label class=\"ga-form-label\" for=\"\">"+name+"</label>\n\
-					<a href=\"javascript:void(0)\" onclick=\"ExModail.init('#"+name_id+"_modal','',"+((clickFunction) ? ('function(){'+clickFunction+'(\''+name_id+'\',\'W_'+name_id+'\')}') : '\'\'') +")\" id=\""+name_id+"_a\" class=\"ga-form-select ga-glyp\">\n\
+					<a href=\"javascript:void(0)\"  onclick=\"ExModail.init('#"+name_id+"_modal','',"+((clickFunction) ? ('function(){'+clickFunction+'(\''+name_id+'\',\'W_'+name_id+'\')}') : '\'\'') +")\" id=\""+name_id+"_a\" class=\"ga-form-select ga-glyp "+cl+"\">\n\
 						Выберите из списка\n\
 					</a>\n\
 					<div id=\""+name_id+"_modal\" class=\"ga-modal-hide\">\n\
@@ -414,7 +451,7 @@ GaGUI = {
 							"+list+"\n\
 						</div>\n\
 					</div>\n\
-					<input type=\"hidden\" c-data-needed=\"0\" c-data-name=\""+name+"\" name=\""+name_id+"\" class=\""+cl+"\" id=\""+name_id+"_input\" value=\"\">\n\
+					<input type=\"hidden\" c-data-needed=\"0\" c-data-name=\""+name+"\" name=\""+name_id+"\" id=\""+name_id+"_input\" value=\"\">\n\
 				</div>";
 		return btn;
 	},	
@@ -422,18 +459,80 @@ GaGUI = {
 
 var GaCarEditing;
 GaCarEditing = {
+	variab : {
+		"mark":"",
+		"model":"",
+		"generation":"",
+		"serie":"",
+		"modification":"",
+	}, 
+	Remove : function (id,name){
+		deletee = confirm("Удалить авто "+name+"?");
+		if (deletee == true){
+			GaAjax.getModule("/auto/"+id+"/","DELETE",function(data){
+				GaAjax.preQuery(window.location.pathname);
+			},"");
+		}
+		return false;
+	},
+	addEvent : function (name,val){
+	switch (name)
+	{
+		case "ID_CAR_MARK":
+			GaCarEditing.variab.mark = val;
+			$("#ID_CAR_MODEL_a,#ID_CAR_GENERATION_a,#ID_CAR_SERIE_a,#ID_CAR_MODIFICATION_a").text("Выберите из списка");
+			$("#ID_CAR_MODEL_input,#ID_CAR_GENERATION_input,#ID_CAR_SERIE_input,#ID_CAR_MODIFICATION_input").val("Выберите из списка");
+			$("#ID_CAR_GENERATION_a,#ID_CAR_SERIE_a,#ID_CAR_MODIFICATION_a").addClass("no-link-select");
+			$("#ID_CAR_MODEL_a").removeClass("no-link-select");
+		break;
+		case "ID_CAR_MODEL":
+			GaCarEditing.variab.model = val;
+			$("#ID_CAR_GENERATION_a,#ID_CAR_SERIE_a,#ID_CAR_MODIFICATION_a").text("Выберите из списка");
+			$("#ID_CAR_GENERATION_input,#ID_CAR_SERIE_input,#ID_CAR_MODIFICATION_input").val("Выберите из списка");
+			$("#ID_CAR_SERIE_a,#ID_CAR_MODIFICATION_a").addClass("no-link-select");
+			$("#ID_CAR_GENERATION_a").removeClass("no-link-select");
+		break;
+		case "ID_CAR_GENERATION":
+			GaCarEditing.variab.generation = val;
+			$("#ID_CAR_SERIE_a,#ID_CAR_MODIFICATION_a").text("Выберите из списка");
+			$("#ID_CAR_SERIE_input,#ID_CAR_MODIFICATION_input").val("Выберите из списка");
+			$("#ID_CAR_MODIFICATION_a").addClass("no-link-select");
+			$("#ID_CAR_SERIE_a").removeClass("no-link-select");
+		break;
+		case "ID_CAR_SERIE":
+			GaCarEditing.variab.serie = val;
+			$("#ID_CAR_MODIFICATION_a").text("Выберите из списка");
+			$("#ID_CAR_MODIFICATION_input").val("Выберите из списка");
+			$("#ID_CAR_MODIFICATION_a").removeClass("no-link-select");
+		break;
+		case "ID_CAR_MODIFICATION":
+			GaCarEditing.variab.modification = val;
+		break;
+	}
+		return false;
+	},
 	loadMark : function (id,window){		
 		GaAjax.getModule("/auto/","GET",function(data){
 			GaStructure.loadedDateCars(id,data,window);
 		},"");
 	},	
 	loadModel : function (id,window){		
-		GaAjax.getModule("/auto/2/","GET",function(data){
+		GaAjax.getModule("/auto/"+GaCarEditing.variab.mark+"/","GET",function(data){
 			GaStructure.loadedDateCars(id,data,window);
 		},"");
 	},
 	loadGeneration : function (id,window){		
-		GaAjax.getModule("/auto/2/6/","GET",function(data){
+		GaAjax.getModule("/auto/"+GaCarEditing.variab.mark+"/"+GaCarEditing.variab.model+"/","GET",function(data){
+			GaStructure.loadedDateCars(id,data,window);
+		},"");
+	},	
+	loadSerie : function (id,window){		
+		GaAjax.getModule("/auto/"+GaCarEditing.variab.mark+"/"+GaCarEditing.variab.model+"/"+GaCarEditing.variab.generation+"/","GET",function(data){
+			GaStructure.loadedDateCars(id,data,window);
+		},"");
+	},	
+	loadModification : function (id,window){		
+		GaAjax.getModule("/auto/"+GaCarEditing.variab.mark+"/"+GaCarEditing.variab.model+"/"+GaCarEditing.variab.generation+"/"+GaCarEditing.variab.serie+"/","GET",function(data){
 			GaStructure.loadedDateCars(id,data,window);
 		},"");
 	},	

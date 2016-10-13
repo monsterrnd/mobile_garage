@@ -148,94 +148,6 @@ MainAjax = {
 		method: "ajax",
 		modules: {}
 	},
-	
-	initQuery : function (obj,callback){
-		////////добавляем к существующим модулям
-		this.variab.modules = $.extend(this.variab.modules,obj);
-		
-		if (typeof(callback) == "function")
-		{
-			callback(true);	
-		}
-	},
-	returnToBlocks : function (){
-		this.getModule(function(res) {
-			var res = res.modules_return;
-			MainAjax.returnData(res)
-			return res;
-		});
-	},		
-	returnOneToBlocks : function (query,returnblock){
-		this.getModule(function(res){			
-			if (returnblock)
-			{	
-				res = res.modules_return;
-				MainAjax.returnData(res)
-			}
-			return res;
-		},true,query)
-	},
-	getModule : function (callback,one_query,obj){
-		if (one_query)
-		{
-			var variab = {
-				method: "ajax",
-				modules: obj
-			};
-		}
-		else
-		{
-			var variab = this.variab;
-		}  
-		
-		bag.i("MainAjax.getModule.variab ",variab);
-		ExStatus.loadimg(variab);
-		$.ajax({
-			url: '/core/modules/main/admin/ajax/ajax_routing.php',
-			type: "POST",
-			data: variab,
-			dataType: 'json',
-		})
-		.done(function(e){
-			ExStatus.loadimgClaer(e);
-			if (typeof(callback) == "function")
-			{
-				callback(e)
-			}
-		})
-		.fail(function(e){
-			ExStatus.loadimgClear(e);
-			if (typeof(callback) == "function")
-			{
-				callback(e)	
-			}
-		});
-	},
-	returnData : function (res){
-		bag.i("MainAjax.returnData.res ",res);
-		$.each(res,function(i, data){
-			
-			if (data.hasOwnProperty("HTML")){
-				$(data.RETURN_PARAMS.BLOCK_RETURN).html(data.HTML)
-				
-				eval(data.RETURN_PARAMS.CALL_BACK);
-				
-				
-			}
-			
-			if (data.hasOwnProperty("ERROR")){
-					bag.i("returnData var data.ERROR: ",data.ERROR);
-					ExModail.info("<div class=\"ga-info_modal\"><h2>Ошибка</h2><br>"+data.ERROR+"</div>",3000);
-			}	
-			
-			if (data.hasOwnProperty("DONE")){
-					bag.i("returnData var data.ERROR: ",data.DONE);
-					ExModail.info("<div class=\"ga-info_modal\"><h2>Информация</h2><br>"+data.DONE+"</div>",3000);
-			}		
-			
-		})
-		initFunction()
-	},
 	clearAll : function (){
 		this.variab = {
 			method: "ajax",
@@ -376,16 +288,16 @@ ExFormated = {
 			var res;
 			if (type == "c-data-name")
 			{
-				var query = {};
-				query[module] = {
-					"ACTION" : act,
-					"BLOCK_RETURN" : block,
-					"CALL_BACK" : call_back,
-					"ELEMENT": el,
-					"CLEAR_FORM": clear_form,
-					"FILDS" : objforsendandname
-				}
-				MainAjax.returnOneToBlocks(query,true)		
+//				var query = {};
+//				query[module] = {
+//					"ACTION" : act,
+//					"BLOCK_RETURN" : block,
+//					"CALL_BACK" : call_back,
+//					"ELEMENT": el,
+//					"CLEAR_FORM": clear_form,
+//					"FILDS" : objforsendandname
+//				}
+//				MainAjax.returnOneToBlocks(query,true)		
 				
 			}
 			else
@@ -400,7 +312,9 @@ ExFormated = {
 					"FILDS" : objforsend
 				}
 				console.log(query);
-				//MainAjax.returnOneToBlocks(query,true)
+				GaAjax.getModule("/auto/","POST",function(data){
+					window.history.go(-1);
+				},objforsend);
 
 			}
 			bag.i("ExFormated.getModule.res ", res);
