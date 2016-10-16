@@ -19,6 +19,12 @@ $(document).ready(function(){
 		if (window.location.pathname != GaLastURL) {
 			GaLastURL = window.location.pathname;
 			GaAjax.preQuery(GaLastURL);
+			if (GaLastURL != "/"){
+				$("#ga-panel_back").addClass("active");
+			}
+			else{
+				$("#ga-panel_back").removeClass("active");
+			}
 		}	  
 	}, 50);
 
@@ -63,55 +69,69 @@ GaStructure = {
 	loadedDate : function (url,data){
 		$(".ga-scroll-wr").html("");
 		console.log(data);
+		
 		///главная страница
-		if (typeof(data) != "object" && data == "/"){
-			GaWindow.main(function(html){
+		if (typeof(data) == "object" && url == "/"){
+			$("#panel-title").html("Мой гараж")
+			GaWindow.main(data,function(html){
 				$(".ga-scroll-wr").html(html);
 				GaAjax.stopHref()
 			})
 		}
+		
 		//списки
 		if (typeof(data) == "object" && data.hasOwnProperty("LIST")){
+			$("#panel-title").html("Выберите услугу")
 			GaWindow.list(data.LIST,url,function(html){		
 				$(".ga-scroll-wr").html(html);
 				GaAjax.stopHref()
 			})			
 		}
+		
 		//блоки компаний
 		if (typeof(data) == "object" && data.hasOwnProperty("LIST_BLOCK")){
-			GaWindow.block_company(data.LIST_BLOCK,url,function(html){		
+			$("#panel-title").html("Выберите компанию")
+			GaWindow.block_company(data.LIST_BLOCK,url,function(html){	
 				$(".ga-scroll-wr").html(html);
 				GaAjax.stopHref()
 			})			
 		}
+		
 		//Детально компания
-		if (typeof(data) == "object" && data.hasOwnProperty("DETAIL")){
+		if (typeof(data) == "object" && data.hasOwnProperty("DETAIL")){			
 			GaWindow.detail(data.DETAIL,url,function(html){		
+				$("#panel-title").html(data.DETAIL.NAME)
 				$(".ga-scroll-wr").html(html);
+				$(".ga-form-checkbox").stf();
 				GaAjax.stopHref()
 			})			
 		}
+		
 		// список авто
-		if (typeof(data) == "object" && data.hasOwnProperty("LIST")){
-			GaWindow.list_auto(data.LIST,url,function(html){		
+		if (typeof(data) == "object" && data.hasOwnProperty("LIST_AUTO")){
+			$("#panel-title").html("Мои авто")
+			GaWindow.list_auto(data.LIST_AUTO,url,function(html){		
 				$(".ga-scroll-wr").html(html);
 				GaAjax.stopHref()
 			})			
 		}
-		//Редактирование авто
+		
+		//добавить авто
 		if (typeof(data) == "object" && data.hasOwnProperty("CARS_ADD")){
+			$("#panel-title").html("Добавить авто")
 			GaWindow.cars_add(data.CARS_ADD,url,function(html){		
-				
 				$(".ga-scroll-wr").html(html);
 				
 				GaAjax.stopHref()
 			})			
 		}
+		
 		//Ответ
 		if (typeof(data) == "object" && data.hasOwnProperty("NOT_QUERE")){
 			$(".ga-scroll-wr").html("По данному запросу нет результата");
 			GaAjax.stopHref()		
 		}
+		
 		//ошибка
 		if (typeof(data) == "object" && data.hasOwnProperty("statusText")){
 			if (data.statusText == "error")
@@ -180,9 +200,9 @@ GaWindow = {
 		method: "ajax",
 	},
 	
-	main : function (callback){
+	main : function (data,callback){
 		
-		html =		GaGUI.select_avto();
+		html =		GaGUI.select_avto(data);
 		html +=	    "<div class=\"ga-main-menu\">";
 		html +=		GaGUI.menu("/repairs/", "Ремонт", "", "zap-to nothref");
 		html +=		GaGUI.menu("/diagnostics/", "Диагностика авто", "", " nothref diagnostic");
@@ -259,7 +279,11 @@ GaWindow = {
 
 var GaGUI;
 GaGUI = {
-	select_avto : function (){
+	select_avto : function (data){
+		list_auto = "";
+		$.each(data,function(i, data_el){	
+			list_auto += GaGUI.menu_list(data_el.ID, data_el.NAME, "return GaGUI.input_select_set(this,'selectauto','"+data_el.NAME+"','"+data_el.ID+"')","");
+		})
 		html =	"<div class=\"ga-auto-select ga-shadow\">\n\
 					<a href=\"#\" class=\"ga-auto-select-avatar ga-shadow\"></a>\n\
 					<div class=\"a-grid\">\n\
@@ -278,21 +302,10 @@ GaGUI = {
 						</div>\n\
 						<div class=\"a-box-md-3-4\">\n\
 							<div class=\"a-mr-10-10\">\n\
-								<a href=\"javascript:void(0)\" onclick=\"ExModail.init('#modal-test')\" class=\"ga-form-select ga-glyp\"> BMW,X6, 124 лс</a>\n\
+								<a href=\"javascript:void(0)\" onclick=\"ExModail.init('#modal-test')\" class=\"ga-form-select ga-glyp\" id=\"selectauto_a\">Выберите авто</a>\n\
 								<div id=\"modal-test\" class=\"ga-modal-hide\">\n\
 									<div class=\"ga-list ga-shadow\">\n\
-										<a href=\"#\" class=\"ga-list-item ga-glyp \">\n\
-											<span>BMW,X1, 124 лс</span>\n\
-										</a>\n\
-										<a href=\"#\" class=\"ga-list-item ga-glyp \">\n\
-											<span>BMW,X3, 151 лс</span>\n\
-										</a>\n\
-										<a href=\"#\" class=\"ga-list-item ga-glyp \">\n\
-											<span>BMW,X5, 180 лс</span>\n\
-										</a>\n\
-										<a href=\"#\" class=\"ga-list-item ga-glyp \">\n\
-											<span>BMW,X6, 220 лс</span>\n\
-										</a>\n\
+										"+list_auto+"\n\
 									</div>\n\
 								</div>\n\
 							</div>\n\
@@ -574,7 +587,9 @@ GaAjax = {
 	preQuery : function (url){
 		//Главная страница
 		if (url == "/"){
-			GaStructure.loadedDate(url,url);
+			GaAjax.getModule("/car_user/","GET",function(data){			
+				GaStructure.loadedDate(url,data.LIST_AUTO);
+			},"");			
 		}
 		
 		//Ремонт авто
@@ -633,7 +648,12 @@ GaAjax = {
 				GaStructure.loadedDate(url,data);
 			},"");
 		})	
-		
+		//запись на то
+		if (url == "/inspection/"){
+			GaAjax.getModule("/inspection/","GET",function(data){
+				GaStructure.loadedDate(url,data);
+			},"");
+		}			
 		//Авто пользователя
 		if (url == "/car/"){
 			GaAjax.getModule("/car_user/","GET",function(data){
@@ -645,7 +665,19 @@ GaAjax = {
 			GaAjax.getModule("/car_user/"+data.REQUEST[2]+"/","GET",function(data){
 				GaStructure.loadedDate(url,data);
 			},"");
-		})						
+		})	
+		//Отзывы
+		if (url == "/reviews/"){
+			GaAjax.getModule("/reviews/","GET",function(data){
+				GaStructure.loadedDate(url,data);
+			},"");
+		}
+		//заказы пользователя
+		if (url == "/order/"){
+			GaAjax.getModule("/order/","GET",function(data){
+				GaStructure.loadedDate(url,data);
+			},"");
+		}
 	},
 }
 var GaRest;
