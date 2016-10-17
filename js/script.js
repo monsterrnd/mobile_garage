@@ -1,6 +1,6 @@
 $(document).ready(function(){
 
-	$(".ga_phone").mask("+7(999)999-99-99");
+	
 	$(".ga-form-checkbox").stf();
 	
 	//window.history.state
@@ -68,6 +68,9 @@ var GaStructure
 GaStructure = {
 	loadedDate : function (url,data){
 		$(".ga-scroll-wr").html("");
+		$('.ga-scroll-content').animate({
+			scrollTop: 0
+		}, 100);
 		console.log(data);
 		
 		///главная страница
@@ -103,6 +106,16 @@ GaStructure = {
 				$("#panel-title").html(data.DETAIL.NAME)
 				$(".ga-scroll-wr").html(html);
 				$(".ga-form-checkbox").stf();
+				$(".ga_phone").mask("+7(999)999-99-99");
+				GaAjax.stopHref()
+			})			
+		}
+		
+		//заказы пользователя
+		if (typeof(data) == "object" && data.hasOwnProperty("LIST_ORDER")){			
+			GaWindow.order_list(data.LIST_ORDER,url,function(html){		
+				$("#panel-title").html("Мои заказы")
+				$(".ga-scroll-wr").html(html);
 				GaAjax.stopHref()
 			})			
 		}
@@ -248,6 +261,15 @@ GaWindow = {
 		if (typeof(callback) == "function")
 			callback(html)
 	},	
+	order_list : function (data,url,callback){		
+		html = "";
+		$.each(data,function(i, datael){
+			html +=	GaGUI.menu_list(url+datael.ID+"/", "Заявка №"+datael.ID+" от "+datael.DATE+", "+datael.SERVICE_NAME, " nothref");
+		})
+
+		if (typeof(callback) == "function")
+			callback(html)
+	},	
 	cars_add : function (data,url,callback){		    
 		html =	"<div class=\"ga-detail ga-shadow\">\n\
 					<form id=\"add_dit_car_user\">\n\
@@ -258,7 +280,7 @@ GaWindow = {
 					"+GaGUI.input_select("Модификация", "ID_CAR_MODIFICATION", {}, "no-link-select", "N",'GaCarEditing.loadModification')+"\n\
 					</form>\n\
 					<div class=\"ga-detail-item\">\n\
-						<a href=\"javascript:void(0)\" onclick=\"ExFormated.getModule('#add_dit_car_user','add_dit_car_user','','','',true,'');\" class=\"ga-form-button\">Добавить</a>\n\
+						<a href=\"javascript:void(0)\" onclick=\"ExFormated.getModule('#add_dit_car_user','addCarUser','','','',true,'');\" class=\"ga-form-button\">Добавить</a>\n\
 					</div>\n\
 				</div>";
 		
@@ -373,14 +395,15 @@ GaGUI = {
 						</div>\n\
 						<div class=\"ga-title\">Контактная информация</div>\n\
 						<div class=\"ga-hr\"></div>\n\
-						"+GaGUI.input_text("Услуга", "SERVICE_NAME", "", "", "N")+"\n\
+						"+GaGUI.input_text("Услуга", "SERVICE_NAME", obj.SERVICE_NAME, "", "N","Y")+"\n\
+						"+GaGUI.input_hidden("ID", "ID", obj.ID, "", "N")+"\n\
 						"+GaGUI.input_text("Имя", "NAME", "", "", "Y")+"\n\
-						"+GaGUI.input_text("Телефон", "PHONE", "", "", "Y")+"\n\
-						"+GaGUI.input_select("Дата", "DATE", {1:{name:"один",value:"1"},2:{name:"два",value:"2"},3:{name:"три",value:"3"}}, "", "Y")+"\n\
+						"+GaGUI.input_text("Телефон", "PHONE", "", "ga_phone", "Y")+"\n\
+						"+GaGUI.input_select("Дата", "DATE", obj.DATE, "", "Y")+"\n\
 						"+GaGUI.input_checkbox("Свои запчасти", "REPAIR", "", "", "N")+"\n\
 						"+GaGUI.input_textarea("Комментарий", "COMMENT", "", "", "N")+"\n\
 						<div class=\"ga-detail-item\">\n\
-							<a href=\"javascript:void(0)\" onclick=\"ExFormated.getModule('#detail_company','detail_company','','','',true,'');\" class=\"ga-form-button\">Отправить заявку</a>\n\
+							<a href=\"javascript:void(0)\" onclick=\"ExFormated.getModule('#detail_company','addOrder','','','',true,'');\" class=\"ga-form-button\">Отправить заявку</a>\n\
 						</div>\n\
 						<div class=\"ga-title\">\n\
 							Отзывы о компании\n\
@@ -415,12 +438,12 @@ GaGUI = {
 						"+desc+"\n\
 					</div>\n\
 				</div>";
-		return btn;
+		return btn;  
 	},
-	input_text : function (name, name_id, val, cl, req){
+	input_text : function (name, name_id, val, cl, req, disabled){
 		btn  =	"<div class=\"ga-detail-item\">\n\
 					<label class=\"ga-form-label\" for=\""+name_id+"_input\">"+name+"</label>\n\
-					<input type=\"text\" c-data-needed=\""+((req == "Y") ? "1" : "0")+"\" c-data-name=\""+name+"\" name=\""+name_id+"\" class=\"ga-form-input "+cl+"\" id=\""+name_id+"_input\" value=\""+val+"\">\n\
+					<input type=\"text\" "+((disabled == "Y") ? ("disabled=\"disabled\" ") : "")+" c-data-needed=\""+((req == "Y") ? "1" : "0")+"\" c-data-name=\""+name+"\" name=\""+name_id+"\" class=\"ga-form-input "+cl+"\" id=\""+name_id+"_input\" value=\""+val+"\">\n\
 				</div>";
 		return btn;
 	},	
@@ -707,5 +730,9 @@ GaRest = {
 				callback({REQUEST:request,CALL_REQUEST:call_request})	
 			}
 		}
+	},
+	noRouting : function (uri){
+		request			= window.location.pathname.split("/");
+		return {REQUEST:request};
 	}
 }

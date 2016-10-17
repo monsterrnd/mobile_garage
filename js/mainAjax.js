@@ -8,8 +8,6 @@ bag = {
 	}
 }
 
-
-
 var ExModail;
 ExModail = {
 	variab: {
@@ -140,24 +138,6 @@ ExModail = {
 	
 }
 
-
-
-var MainAjax;
-MainAjax = {
-	variab:{
-		method: "ajax",
-		modules: {}
-	},
-	clearAll : function (){
-		this.variab = {
-			method: "ajax",
-			modules: {}
-		}
-	}
-}
-
-
-
 var ExForm;
 ExForm = {
 	////проверка формы перед отправкой
@@ -279,45 +259,17 @@ ExFormated = {
 			bag.i("ExFormated.getModule.el ",el);
 			bag.i("ExFormated.getModule.objforsendandname ",objforsendandname);
 			
-
 			if (typeof(el) == "object")
 			{
 				el = "";
 			}
 			
 			var res;
-			if (type == "c-data-name")
-			{
-//				var query = {};
-//				query[module] = {
-//					"ACTION" : act,
-//					"BLOCK_RETURN" : block,
-//					"CALL_BACK" : call_back,
-//					"ELEMENT": el,
-//					"CLEAR_FORM": clear_form,
-//					"FILDS" : objforsendandname
-//				}
-//				MainAjax.returnOneToBlocks(query,true)		
-				
-			}
-			else
-			{
-				var query = {};
-				query[module] = {
-					"ACTION" : act,
-					"BLOCK_RETURN" : block,
-					"CALL_BACK" : call_back,
-					"ELEMENT": el,
-					"CLEAR_FORM": clear_form,
-					"FILDS" : objforsend
-				}
-				console.log(query);
-				GaAjax.getModule("/auto/","POST",function(data){
-					window.history.go(-1);
-				},objforsend);
-
-			}
-			bag.i("ExFormated.getModule.res ", res);
+			GaPostAjax.Output(module,objforsend,objforsendandname);
+			///Добавить авто
+			//GaAjax.getModule("/auto/","POST",function(data){
+			//	window.history.go(-1);
+			//},objforsend);
 		})
 	}
 }
