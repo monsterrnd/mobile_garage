@@ -16,5 +16,10 @@ GaPostAjax = {
 				},objdata);	
 			break;		
 		}				
+	},
+	setMainAuto : function (value){
+		GaAjax.getModule("/set_main_auto/","POST",function(data){
+
+		},{ID:value});						
 	}
 }

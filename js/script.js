@@ -28,24 +28,6 @@ $(document).ready(function(){
 		}	  
 	}, 50);
 
-
-//	window.addEventListener('popstate', function(e){
-//		console.log(e);
-//	}, false);
-//	
-	//tester ("");
-	
-//	window.onbeforeunload = function (evt) {
-//		var message = "Document 'foo' is not saved. You will lost the changes if you leave the page.";
-//		if (typeof evt == "undefined") {
-//			evt = window.event;
-//		}
-//		if (evt) {
-//			evt.returnValue = message;
-//		}
-//		return message;
-//	}	
-	
 })
 
 
@@ -204,6 +186,7 @@ var GaConnect
 GaConnect = {
 	variab:{
 		server: "http://192.168.0.77:6455/app",
+		imgserver: "http://192.168.0.77:6455",
 	}
 }
 
@@ -303,8 +286,13 @@ var GaGUI;
 GaGUI = {
 	select_avto : function (data){
 		list_auto = "";
+		main_auto = "Выберите авто";
 		$.each(data,function(i, data_el){	
-			list_auto += GaGUI.menu_list(data_el.ID, data_el.NAME, "return GaGUI.input_select_set(this,'selectauto','"+data_el.NAME+"','"+data_el.ID+"')","");
+			if (data_el.DEF == "Y"){
+				main_auto = data_el.NAME;	
+			}
+			
+			list_auto += GaGUI.menu_list(data_el.ID, data_el.NAME, "GaGUI.input_select_set(this,'selectauto','"+data_el.NAME+"','"+data_el.ID+"');return GaPostAjax.setMainAuto('"+data_el.ID+"')","");
 		})
 		html =	"<div class=\"ga-auto-select ga-shadow\">\n\
 					<a href=\"#\" class=\"ga-auto-select-avatar ga-shadow\"></a>\n\
@@ -324,7 +312,8 @@ GaGUI = {
 						</div>\n\
 						<div class=\"a-box-md-3-4\">\n\
 							<div class=\"a-mr-10-10\">\n\
-								<a href=\"javascript:void(0)\" onclick=\"ExModail.init('#modal-test')\" class=\"ga-form-select ga-glyp\" id=\"selectauto_a\">Выберите авто</a>\n\
+								<a href=\"javascript:void(0)\" onclick=\"ExModail.init('#modal-test')\" class=\"ga-form-select ga-glyp\" id=\"selectauto_a\">\n\
+								"+main_auto+"</a>\n\
 								<div id=\"modal-test\" class=\"ga-modal-hide\">\n\
 									<div class=\"ga-list ga-shadow\">\n\
 										"+list_auto+"\n\
@@ -352,7 +341,7 @@ GaGUI = {
 			btn  =	"<a href=\""+url+"\" "+((on_click != "") ? "onclick=\""+on_click+"\"" : "")+" class=\"ga-listblock-item ga-shadow "+cl+"\">\n\
 						<div class=\"a-grid\">\n\
 							<div class=\"a-box-md-3-1\">\n\
-								<div class=\"ga-listblock-logo\" style=\"background-image:url("+obj.IMG+")\"></div>\n\
+								<div class=\"ga-listblock-logo\" style=\"background-image:url("+GaConnect.variab.imgserver+obj.LOGO+")\"></div>\n\
 							</div>\n\
 							<div class=\"a-box-md-1-3\">\n\
 								<div class=\"a-mr-5-0\">\n\
@@ -378,7 +367,7 @@ GaGUI = {
 	detail : function (obj){
 		btn =	"<div class=\"ga-detail ga-shadow\">\n\
 					<form role=\"form\" id=\"detail_company\">\n\
-						<img class=\"ga-detail-logo\" src=\""+obj.IMG+"\" alt=\"\" />\n\
+						<img class=\"ga-detail-logo\" src=\""+GaConnect.variab.imgserver+obj.LOGO+"\" alt=\"\" />\n\
 						"+this.rating_get(obj.RATING,"a-text-center")+"\n\
 						<div class=\"ga-detail-rating-text\">\n\
 							"+obj.COUNT_REVIEW+" Отзывов\n\
