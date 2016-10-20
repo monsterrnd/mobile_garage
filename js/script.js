@@ -93,7 +93,7 @@ GaStructure = {
 			})			
 		}
 		
-		//заказы пользователя
+		//заказы пользователя список
 		if (typeof(data) == "object" && data.hasOwnProperty("LIST_ORDER")){			
 			GaWindow.order_list(data.LIST_ORDER,url,function(html){		
 				$("#panel-title").html("Мои заказы")
@@ -101,7 +101,22 @@ GaStructure = {
 				GaAjax.stopHref()
 			})			
 		}
-		
+		//заказы пользователя детально
+		if (typeof(data) == "object" && data.hasOwnProperty("DETAIL_ORDER")){			
+			GaWindow.order_detail(data.DETAIL_ORDER,url,function(html){		
+				//$("#panel-title").html("Мои заказы")
+				$(".ga-scroll-wr").html(html);
+				GaAjax.stopHref()
+			})			
+		}
+		//отзывы пользователя список
+		if (typeof(data) == "object" && data.hasOwnProperty("LIST_REWIEV")){			
+			GaWindow.review_list(data.LIST_REWIEV,url,function(html){		
+				//$("#panel-title").html("Мои заказы")
+				$(".ga-scroll-wr").html(html);
+				GaAjax.stopHref()
+			})			
+		}		
 		// список авто
 		if (typeof(data) == "object" && data.hasOwnProperty("LIST_AUTO")){
 			$("#panel-title").html("Мои авто")
@@ -214,7 +229,7 @@ GaWindow = {
 	list : function (data,url,callback){	
 		html = "";
 		$.each(data,function(i, datael){
-			html +=	GaGUI.menu_list(url+datael.ID+"/", datael.NAME, "", " nothref");
+			html +=	GaGUI.menu_list(url+datael.ID+"/", datael.NAME, "", "nothref");
 		})
 		
 		if (typeof(callback) == "function")
@@ -232,7 +247,7 @@ GaWindow = {
 	block_company : function (data,url,callback){	
 		html = "";
 		$.each(data,function(i, datael){
-			html +=	GaGUI.block_company(window.location.pathname+datael.ID+"/", datael.NAME, "",datael, " nothref");
+			html +=	GaGUI.block_company(window.location.pathname+datael.ID+"/", datael.NAME, "",datael, "nothref");
 		})
 		
 		if (typeof(callback) == "function")
@@ -247,8 +262,15 @@ GaWindow = {
 	order_list : function (data,url,callback){		
 		html = "";
 		$.each(data,function(i, datael){
-			html +=	GaGUI.menu_list(url+datael.ID+"/", "Заявка №"+datael.ID+" от "+datael.DATE+", "+datael.SERVICE_NAME, " nothref");
+			html +=	GaGUI.menu_list(url+datael.ID+"/", "Заявка №"+datael.ID+" от "+datael.DATE+", "+datael.SERVICE_NAME, "","nothref");
 		})
+
+		if (typeof(callback) == "function")
+			callback(html)
+	},	
+	order_detail : function (data,url,callback){		
+		html = "";
+
 
 		if (typeof(callback) == "function")
 			callback(html)
@@ -280,6 +302,15 @@ GaWindow = {
 		if (typeof(callback) == "function")
 			callback(html)
 	},
+	review_list : function (data,url,callback){		
+		html = "";
+		$.each(data,function(i, datael){
+			html +=	GaGUI.menu_list(url+datael.ID+"/",datael.COMPANY.NAME+", "+datael.DATE+", "+datael.DESCRIPTION, "","nothref");
+		})
+
+		if (typeof(callback) == "function")
+			callback(html)
+	},	
 }
 
 var GaGUI;
@@ -684,12 +715,19 @@ GaAjax = {
 				GaStructure.loadedDate(url,data);
 			},"");
 		}
-		//заказы пользователя
+		//заказы пользователя список
 		if (url == "/order/"){
 			GaAjax.getModule("/order/","GET",function(data){
 				GaStructure.loadedDate(url,data);
 			},"");
 		}
+		//заказы пользователя детально
+		GaRest.Routing("/order/{%}/",function(data){
+			url = "/order/";
+				GaAjax.getModule("/order/"+data.REQUEST[2]+"/","GET",function(data){
+					GaStructure.loadedDate(url,data);
+				},"");
+		})
 	},
 }
 var GaRest;
