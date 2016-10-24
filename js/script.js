@@ -104,7 +104,7 @@ GaStructure = {
 		//заказы пользователя детально
 		if (typeof(data) == "object" && data.hasOwnProperty("DETAIL_ORDER")){			
 			GaWindow.order_detail(data.DETAIL_ORDER,url,function(html){		
-				//$("#panel-title").html("Мои заказы")
+				$("#panel-title").html("Заказы №"+data.DETAIL_ORDER.ID)
 				$(".ga-scroll-wr").html(html);
 				GaAjax.stopHref()
 			})			
@@ -262,7 +262,7 @@ GaWindow = {
 	order_list : function (data,url,callback){		
 		html = "";
 		$.each(data,function(i, datael){
-			html +=	GaGUI.menu_list(url+datael.ID+"/", "Заявка №"+datael.ID+" от "+datael.DATE+", "+datael.SERVICE_NAME, "","nothref");
+			html +=	GaGUI.menu_list(url+datael.ID+"/", "Заявка №"+datael.ID+" на "+datael.DATE+", "+datael.SERVICE_NAME, "","nothref");
 		})
 
 		if (typeof(callback) == "function")
@@ -270,7 +270,7 @@ GaWindow = {
 	},	
 	order_detail : function (data,url,callback){		
 		html = "";
-
+		html = GaGUI.order_detail(data);
 
 		if (typeof(callback) == "function")
 			callback(html)
@@ -396,6 +396,23 @@ GaGUI = {
 		return btn;
 	},
 	detail : function (obj){
+		list_reviews = "";
+		if (typeof(obj) == "object" && obj.hasOwnProperty("REVIEW_LIST")){
+			$.each(obj.REVIEW_LIST,function(i, data_el){	
+				list_reviews += GaGUI.review_item(data_el.USER_NAME,data_el.DATE,data_el.DESCRIPTION,data_el.RATING);
+			})	
+			if (list_reviews.length > 0){
+				list_reviews = "<div class=\"ga-title\">\n\
+					Отзывы о компании\n\
+				</div>\n\
+				<div class=\"ga-hr\"></div>\n\
+				<div class=\"review\">\n\
+				"+list_reviews+"\n\
+				</div>";
+			}
+		}
+		
+
 		btn =	"<div class=\"ga-detail ga-shadow\">\n\
 					<form role=\"form\" id=\"detail_company\">\n\
 						<img class=\"ga-detail-logo\" src=\""+GaConnect.variab.imgserver+obj.LOGO+"\" alt=\"\" />\n\
@@ -417,22 +434,67 @@ GaGUI = {
 						<div class=\"ga-hr\"></div>\n\
 						"+GaGUI.input_text("Услуга", "SERVICE_NAME", obj.SERVICE_NAME, "", "N","Y")+"\n\
 						"+GaGUI.input_hidden("ID", "ID", obj.ID, "", "N")+"\n\
-						"+GaGUI.input_text("Имя", "NAME", "", "", "Y")+"\n\
-						"+GaGUI.input_text("Телефон", "PHONE", "", "ga_phone", "Y")+"\n\
+						"+GaGUI.input_text("Имя", "NAME", obj.USER.FIRST_NAME, "", "Y")+"\n\
+						"+GaGUI.input_text("Телефон", "PHONE", obj.USER.PHONE, "ga_phone", "Y")+"\n\
 						"+GaGUI.input_select("Дата", "DATE", obj.DATE, "", "Y")+"\n\
 						"+GaGUI.input_checkbox("Свои запчасти", "REPAIR", "", "", "N")+"\n\
 						"+GaGUI.input_textarea("Комментарий", "COMMENT", "", "", "N")+"\n\
 						<div class=\"ga-detail-item\">\n\
 							<a href=\"javascript:void(0)\" onclick=\"ExFormated.getModule('#detail_company','addOrder','','','',true,'');\" class=\"ga-form-button\">Отправить заявку</a>\n\
 						</div>\n\
-						<div class=\"ga-title\">\n\
-							Отзывы о компании\n\
+						"+list_reviews+"\n\
+					</form>\n\
+				</div>";		
+		return btn;
+	},
+	order_detail : function (obj){
+		list_reviews = "";
+		if (typeof(obj) == "object" && obj.hasOwnProperty("REVIEW_LIST")){
+			$.each(obj.REVIEW_LIST,function(i, data_el){	
+				list_reviews += GaGUI.review_item(data_el.USER_NAME,data_el.DATE,data_el.DESCRIPTION,data_el.RATING);
+			})	
+			if (list_reviews.length > 0){
+				list_reviews = "<div class=\"ga-title\">\n\
+					Отзывы о компании\n\
+				</div>\n\
+				<div class=\"ga-hr\"></div>\n\
+				<div class=\"review\">\n\
+				"+list_reviews+"\n\
+				</div>";
+			}
+		}
+		
+
+		btn =	"<div class=\"ga-detail ga-shadow\">\n\
+					<form role=\"form\" id=\"detail_company\">\n\
+						<img class=\"ga-detail-logo\" src=\""+GaConnect.variab.imgserver+obj.COMPANY.LOGO+"\" alt=\"\" />\n\
+						"+this.rating_get(obj.RATING,"a-text-center")+"\n\
+						<div class=\"ga-detail-rating-text\">\n\
+							"+obj.COUNT_REVIEW+" Отзывов\n\
 						</div>\n\
+						<div class=\"ga-detail-title\">\n\
+							"+obj.COMPANY.NAME+"\n\
+						</div>\n\
+						<div class=\"ga-detail-price\">\n\
+							"+obj.COMPANY.PRICE+"\n\
+						</div>\n\
+						<div class=\"ga-detail-address\">\n\
+							<span class=\"glyphicon glyphicon-map-marker\"></span>\n\
+							"+obj.COMPANY.ADDRESS+"\n\
+						</div>\n\
+						<div class=\"ga-title\">Контактная информация</div>\n\
 						<div class=\"ga-hr\"></div>\n\
-						<div class=\"review\">\n\
-						"+GaGUI.review_item("54654","5675","5645",5)+"\n\
-						"+GaGUI.review_item("765","567567","5464",5)+"\n\
+						"+GaGUI.input_text("Услуга", "SERVICE_NAME", obj.SERVICE_NAME, "", "N","Y")+"\n\
+						"+GaGUI.input_hidden("ID", "ID", obj.ID, "", "N")+"\n\
+						"+GaGUI.input_text("Имя", "NAME", obj.FIRST_NAME, "", "Y","Y")+"\n\
+						"+GaGUI.input_text("Телефон", "PHONE", obj.PHONE, "ga_phone", "Y","Y")+"\n\
+						"+GaGUI.input_text("Дата", "DATE", obj.DATE, "", "Y","Y")+"\n\
+						"+GaGUI.input_checkbox("Свои запчасти", "REPAIR", "", "", "N")+"\n\
+						"+GaGUI.input_textarea("Комментарий", "COMMENT", "", "", "N","Y")+"\n\
+						<div class=\"ga-detail-item\">\n\
+							<a href=\"javascript:void(0)\" onclick=\"ExFormated.getModule('#detail_company','addRemove','','','',true,'');\" class=\"ga-form-button ga-button-red\">Отменить заявку</a>\n\
 						</div>\n\
+						"+list_reviews+"\n\
 					</form>\n\
 				</div>";		
 		return btn;
@@ -471,10 +533,10 @@ GaGUI = {
 		btn  =	"<input type=\"hidden\" c-data-needed=\"0\" c-data-name=\""+name+"\" name=\""+name_id+"\" class=\""+cl+"\" id=\""+name_id+"_input\" value=\""+val+"\">";
 		return btn;
 	},	
-	input_textarea : function (name, name_id, val, cl, req){
+	input_textarea : function (name, name_id, val, cl, req, disabled){
 		btn  =	"<div class=\"ga-detail-item\">\n\
 					<label class=\"ga-form-label\" for=\""+name_id+"_input\">"+name+"</label>\n\
-					<textarea c-data-needed=\""+((req == "Y") ? "1" : "0")+"\" c-data-name=\""+name+"\" name=\""+name_id+"\" class=\"ga-form-textarea "+cl+"\" id=\""+name_id+"_input\" rows=\"4\">"+val+"</textarea>\n\
+					<textarea "+((disabled == "Y") ? ("disabled=\"disabled\" ") : "")+" c-data-needed=\""+((req == "Y") ? "1" : "0")+"\" c-data-name=\""+name+"\" name=\""+name_id+"\" class=\"ga-form-textarea "+cl+"\" id=\""+name_id+"_input\" rows=\"4\">"+val+"</textarea>\n\
 				</div>";
 		return btn;
 	},	
