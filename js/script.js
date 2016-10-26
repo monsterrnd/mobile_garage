@@ -221,6 +221,8 @@ GaWindow = {
 		html +=		GaGUI.menu("/tire/", "Шиномонтаж", "", " nothref tire");
 		html +=		GaGUI.menu("/reviews/", "Мои отзывы", "", " nothref myreview");
 		html +=		GaGUI.menu("/order/", "Мои заказы", "", " nothref myorders");
+		//html +=		GaGUI.menu("/order/", "Предложения", "", " nothref offers");
+		html +=		GaGUI.menu("/order/", "Справка", "", " nothref info");
 		html +=		"</div>";
 		
 		if (typeof(callback) == "function")
@@ -249,7 +251,8 @@ GaWindow = {
 		$.each(data,function(i, datael){
 			html +=	GaGUI.block_company(window.location.pathname+datael.ID+"/", datael.NAME, "",datael, "nothref");
 		})
-		
+		if (html.length > 1 )
+			html = "<div class=\"ga-listblock\">"+html+"</div>";
 		if (typeof(callback) == "function")
 			callback(html)
 	},
@@ -262,9 +265,10 @@ GaWindow = {
 	order_list : function (data,url,callback){		
 		html = "";
 		$.each(data,function(i, datael){
-			html +=	GaGUI.menu_list(url+datael.ID+"/", "Заявка №"+datael.ID+" на "+datael.DATE+", "+datael.SERVICE_NAME, "","nothref");
+			html +=	GaGUI.block_order(url+datael.ID+"/", datael.NAME, "",datael, "nothref");
 		})
-
+		if (html.length > 1 )
+			html = "<div class=\"ga-listblock\">"+html+"</div>";
 		if (typeof(callback) == "function")
 			callback(html)
 	},	
@@ -395,6 +399,48 @@ GaGUI = {
 		
 		return btn;
 	},
+	block_order : function (url, name, on_click, obj, cl){
+			
+			classborder = "";
+			namestatus = "";
+			switch (obj.STATUS)
+			{
+				case "Y":
+					classborder = "select_green";
+					namestatus = "Принята";
+				break;
+				case "D":
+					classborder = "select_red";
+					namestatus = "Отменена";
+				break;
+				case "C":
+					classborder = "select_gery";
+					namestatus = "Выполнена";
+				break;
+			}
+			btn  =	"<a href=\""+url+"\" "+((on_click != "") ? "onclick=\""+on_click+"\"" : "")+" class=\"ga-listblock-item ga-shadow "+cl+" "+classborder+"\">\n\
+						<div class=\"a-mr-5-0\">\n\
+							<span class=\"ga-listblock-order\">\n\
+								Заявка "+obj.ID+" на "+obj.DATE+"\n\
+							</span>\n\
+						</div>\n\
+						<div class=\"a-mr-5-0\">\n\
+							<span class=\"ga-listblock-status\">\n\
+								"+namestatus+"\n\
+							</span>\n\
+						</div>\n\
+						<div class=\"a-mr-5-0\">\n\
+							<span class=\"ga-listblock-name\">\n\
+								"+obj.SERVICE_NAME+"\n\
+							</span>\n\
+						</div>\n\
+						<div class=\"a-mr-5-0\">\n\
+							<span class=\"ga-listblock-price\">"+obj.PRICE+"</span>\n\
+						</div>\n\
+					</a>";
+		
+		return btn;
+	},
 	detail : function (obj){
 		list_reviews = "";
 		if (typeof(obj) == "object" && obj.hasOwnProperty("REVIEW_LIST")){
@@ -434,6 +480,7 @@ GaGUI = {
 						<div class=\"ga-hr\"></div>\n\
 						"+GaGUI.input_text("Услуга", "SERVICE_NAME", obj.SERVICE_NAME, "", "N","Y")+"\n\
 						"+GaGUI.input_hidden("ID", "ID", obj.ID, "", "N")+"\n\
+						"+GaGUI.input_hidden("PRICE", "PRICE", obj.PRICE, "", "N")+"\n\
 						"+GaGUI.input_text("Имя", "NAME", obj.USER.FIRST_NAME, "", "Y")+"\n\
 						"+GaGUI.input_text("Телефон", "PHONE", obj.USER.PHONE, "ga_phone", "Y")+"\n\
 						"+GaGUI.input_select("Дата", "DATE", obj.DATE, "", "Y")+"\n\
@@ -476,7 +523,7 @@ GaGUI = {
 							"+obj.COMPANY.NAME+"\n\
 						</div>\n\
 						<div class=\"ga-detail-price\">\n\
-							"+obj.COMPANY.PRICE+"\n\
+							"+obj.PRICE+"\n\
 						</div>\n\
 						<div class=\"ga-detail-address\">\n\
 							<span class=\"glyphicon glyphicon-map-marker\"></span>\n\
